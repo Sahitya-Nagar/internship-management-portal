@@ -22,6 +22,10 @@ app.get("/", (req, res) => {
   });
 });
 
+import testDataRoutes from "./routes/testdata.routes.js";
+
+app.use("/api/test-data", testDataRoutes);
+
 app.get("/api/health", (req, res) => {
   res.json({
     success: true,
