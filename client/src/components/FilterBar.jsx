@@ -1,54 +1,48 @@
 import { Filter, X } from "lucide-react";
 
 export default function FilterBar({ filters, activeFilters, onFilterChange, onClearFilters }) {
-  const filterKeys = [
-    { key: "semester", label: "Semester" },
-    { key: "payment", label: "Payment" },
-    { key: "city", label: "City" },
-    { key: "major", label: "Major" },
-    { key: "profession", label: "Profession" },
-    { key: "year", label: "Year" }
-  ];
+  if (!filters || Object.keys(filters).length === 0) return null;
 
-  const activeCount = Object.values(activeFilters).filter(Boolean).length;
+  const hasActiveFilters = Object.values(activeFilters).some(v => v !== "");
 
   return (
-    <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-6 flex flex-wrap gap-4 items-center">
-      <div className="flex items-center gap-2 text-slate-500 font-medium mr-2">
-        <Filter size={18} />
-        <span>Filters</span>
-        {activeCount > 0 && (
-          <span className="bg-indigo-100 text-indigo-700 text-xs py-0.5 px-2 rounded-full font-bold">
-            {activeCount}
-          </span>
+    <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm mb-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2 text-gray-700">
+          <Filter size={18} />
+          <h3 className="font-semibold text-sm">Filters</h3>
+        </div>
+        {hasActiveFilters && (
+          <button 
+            onClick={onClearFilters}
+            className="text-xs font-medium text-gray-500 hover:text-gray-900 flex items-center gap-1"
+          >
+            <X size={14} /> Clear all
+          </button>
         )}
       </div>
 
-      {filterKeys.map(({ key, label }) => (
-        <select
-          key={key}
-          value={activeFilters[key] || ""}
-          onChange={(e) => onFilterChange(key, e.target.value)}
-          className="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2 outline-none cursor-pointer hover:bg-slate-100 transition-colors min-w-[120px]"
-        >
-          <option value="">{label} (All)</option>
-          {filters[`${key}s`]?.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
-      ))}
-
-      {activeCount > 0 && (
-        <button
-          onClick={onClearFilters}
-          className="ml-auto flex items-center gap-1 text-sm text-red-500 hover:text-red-700 font-medium px-3 py-2 rounded-lg hover:bg-red-50 transition-colors"
-        >
-          <X size={16} />
-          Clear All
-        </button>
-      )}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        {Object.entries(filters).map(([key, options]) => (
+          <div key={key} className="flex flex-col">
+            <label className="text-xs font-medium text-gray-500 mb-1 capitalize">
+              {key}
+            </label>
+            <select
+              value={activeFilters[key] || ""}
+              onChange={(e) => onFilterChange(key, e.target.value)}
+              className="w-full text-sm rounded-md border border-gray-300 py-1.5 px-2 bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900"
+            >
+              <option value="">All</option>
+              {options.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

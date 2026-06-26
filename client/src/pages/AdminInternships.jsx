@@ -73,11 +73,11 @@ export default function AdminInternships() {
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-end mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Internship Positions</h2>
-          <p className="text-slate-500 mt-1">Manage and track all internship openings</p>
+          <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Internship Positions</h2>
+          <p className="text-gray-500 mt-1">Manage and track all internship openings</p>
         </div>
-        <button className="bg-[#08060d] hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-sm">
-          <Plus size={18} />
+        <button className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-md font-medium flex items-center gap-2 transition-colors shadow-sm text-sm">
+          <Plus size={16} />
           Add Position
         </button>
       </div>
@@ -101,12 +101,12 @@ export default function AdminInternships() {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map(i => (
-            <div key={i} className="bg-white rounded-2xl p-6 h-64 border border-slate-100 animate-pulse">
-              <div className="w-2/3 h-6 bg-slate-200 rounded mb-4"></div>
-              <div className="w-1/3 h-4 bg-slate-200 rounded mb-8"></div>
+            <div key={i} className="bg-white rounded-lg p-5 h-64 border border-gray-200 animate-pulse">
+              <div className="w-2/3 h-6 bg-gray-200 rounded mb-4"></div>
+              <div className="w-1/3 h-4 bg-gray-200 rounded mb-8"></div>
               <div className="space-y-3">
-                <div className="w-1/2 h-4 bg-slate-200 rounded"></div>
-                <div className="w-1/2 h-4 bg-slate-200 rounded"></div>
+                <div className="w-1/2 h-4 bg-gray-200 rounded"></div>
+                <div className="w-1/2 h-4 bg-gray-200 rounded"></div>
               </div>
             </div>
           ))}
@@ -118,12 +118,12 @@ export default function AdminInternships() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 bg-white rounded-2xl border border-slate-100 shadow-sm">
-          <h3 className="text-lg font-bold text-slate-700">No internships found</h3>
-          <p className="text-slate-500 mt-2">Try adjusting your search or filters.</p>
+        <div className="text-center py-20 bg-white rounded-lg border border-gray-200 shadow-sm">
+          <h3 className="text-lg font-bold text-gray-700">No internships found</h3>
+          <p className="text-gray-500 mt-2">Try adjusting your search or filters.</p>
           <button 
             onClick={clearFilters}
-            className="mt-4 text-indigo-600 hover:text-indigo-800 font-medium"
+            className="mt-4 text-gray-900 font-medium hover:underline"
           >
             Clear all filters
           </button>

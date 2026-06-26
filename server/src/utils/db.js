@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL || "postgresql://neondb_owner:npg_oSflkItbG71Q@ep-autumn-cherry-aq81jo20-pooler.c-8.us-east-1.aws.neon.tech/neondb?sslmode=require",
+  ssl: { rejectUnauthorized: false },
+  connectionTimeoutMillis: 10000,
 });
 
 export const query = (text, params) => pool.query(text, params);
