@@ -6,8 +6,6 @@ import {
   SlidersHorizontal,
   MapPin,
   Calendar,
-  Layers,
-  FileCheck,
   Building,
   Sparkles,
   ExternalLink,
@@ -21,18 +19,15 @@ import {
 export default function StudentJobBoard() {
   const { token } = useAuth();
   
-  // Job Board States
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   
-  // Search & Filter States
   const [search, setSearch] = useState("");
   const [discipline, setDiscipline] = useState("");
   const [province, setProvince] = useState("");
   const [compensation, setCompensation] = useState("");
 
-  // Application Modal States
   const [selectedJob, setSelectedJob] = useState(null);
   const [resumeFile, setResumeFile] = useState(null);
   const [isApplying, setIsApplying] = useState(false);
@@ -152,39 +147,35 @@ export default function StudentJobBoard() {
 
   return (
     <div className="max-w-7xl mx-auto font-sans">
-      {/* Header section */}
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-          Kinesiology Internship Board
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+          Job Board
         </h1>
-        <p className="text-slate-500 mt-1">
-          Explore active clinical, research, and educational placements at CHPH
+        <p className="text-gray-500 mt-1 text-sm">
+          Explore active clinical, research, and educational placements
         </p>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm mb-8 space-y-4">
+      <div className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm mb-8 space-y-4">
         <div className="flex flex-col lg:flex-row gap-4">
-          {/* Search box */}
           <div className="flex-1 relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-              <Search size={18} />
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+              <Search size={16} />
             </div>
             <input
               type="text"
               placeholder="Search by role, company, or description..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white transition-all text-sm font-medium"
+              className="block w-full pl-9 pr-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-colors text-sm"
             />
           </div>
 
-          {/* Discipline dropdown */}
           <div className="w-full lg:w-48">
             <select
               value={discipline}
               onChange={(e) => setDiscipline(e.target.value)}
-              className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white transition-all text-sm font-medium"
+              className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-colors text-sm"
             >
               <option value="">All Disciplines</option>
               {disciplines.map((d) => (
@@ -195,12 +186,11 @@ export default function StudentJobBoard() {
             </select>
           </div>
 
-          {/* Province dropdown */}
           <div className="w-full lg:w-48">
             <select
               value={province}
               onChange={(e) => setProvince(e.target.value)}
-              className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white transition-all text-sm font-medium"
+              className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-colors text-sm"
             >
               <option value="">All Provinces</option>
               {provinces.map((p) => (
@@ -211,12 +201,11 @@ export default function StudentJobBoard() {
             </select>
           </div>
 
-          {/* Compensation dropdown */}
           <div className="w-full lg:w-48">
             <select
               value={compensation}
               onChange={(e) => setCompensation(e.target.value)}
-              className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white transition-all text-sm font-medium"
+              className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-colors text-sm"
             >
               <option value="">Compensation</option>
               <option value="Paid">Paid</option>
@@ -224,11 +213,10 @@ export default function StudentJobBoard() {
             </select>
           </div>
 
-          {/* Reset Filters button */}
           {(search || discipline || province || compensation) && (
             <button
               onClick={clearFilters}
-              className="px-5 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm transition-all whitespace-nowrap"
+              className="px-4 py-2 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors whitespace-nowrap"
             >
               Clear Filters
             </button>
@@ -236,21 +224,20 @@ export default function StudentJobBoard() {
         </div>
       </div>
 
-      {/* Main List */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map((n) => (
             <div
               key={n}
-              className="bg-white rounded-3xl p-6 border border-slate-100 animate-pulse space-y-4"
+              className="bg-white rounded-lg p-5 border border-gray-200 animate-pulse space-y-4"
             >
-              <div className="h-6 w-2/3 bg-slate-200 rounded-md"></div>
-              <div className="h-4 w-1/3 bg-slate-200 rounded-md"></div>
-              <div className="space-y-2 py-4">
-                <div className="h-4 w-full bg-slate-200 rounded-md"></div>
-                <div className="h-4 w-5/6 bg-slate-200 rounded-md"></div>
+              <div className="h-6 w-2/3 bg-gray-200 rounded"></div>
+              <div className="h-4 w-1/3 bg-gray-200 rounded"></div>
+              <div className="space-y-2 py-2">
+                <div className="h-4 w-full bg-gray-200 rounded"></div>
+                <div className="h-4 w-5/6 bg-gray-200 rounded"></div>
               </div>
-              <div className="h-10 w-full bg-slate-200 rounded-xl"></div>
+              <div className="h-8 w-full bg-gray-200 rounded"></div>
             </div>
           ))}
         </div>
@@ -259,69 +246,62 @@ export default function StudentJobBoard() {
           {jobs.map((job) => (
             <div
               key={job.id}
-              className="bg-white rounded-3xl p-6 border border-slate-100 hover:border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between relative overflow-hidden"
+              className="bg-white rounded-lg p-5 border border-gray-200 hover:border-gray-300 shadow-sm transition-colors flex flex-col justify-between"
             >
               <div>
-                {/* Badges row */}
-                <div className="flex gap-2 mb-4 items-center flex-wrap">
+                <div className="flex gap-2 mb-3 items-center flex-wrap">
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                    className={`px-2 py-1 rounded-md text-xs font-medium border ${
                       job.compensation === "Paid"
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                        : "bg-amber-50 text-amber-700 border-amber-100"
+                        ? "bg-gray-100 text-gray-800 border-gray-200"
+                        : "bg-white text-gray-600 border-gray-200"
                     }`}
                   >
                     {job.compensation}
                   </span>
                   {isNewJob(job.published_at) && (
-                    <span className="bg-[#1a3a5c] text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-sm">
-                      <Sparkles size={12} />
+                    <span className="bg-gray-900 text-white px-2 py-1 rounded-md text-xs font-medium flex items-center gap-1">
+                      <Sparkles size={10} />
                       New
                     </span>
                   )}
-                  <span className="bg-slate-50 text-slate-600 border border-slate-100 px-3 py-1 rounded-full text-xs font-bold">
+                  <span className="bg-gray-50 text-gray-600 border border-gray-200 px-2 py-1 rounded-md text-xs font-medium">
                     {job.discipline}
                   </span>
                 </div>
 
-                {/* Job Title */}
-                <h3 className="text-xl font-bold text-slate-900 hover:text-[#1a3a5c] transition-colors leading-snug">
+                <h3 className="text-lg font-bold text-gray-900">
                   {job.title}
                 </h3>
 
-                {/* Organization */}
-                <div className="flex items-center gap-2 text-slate-500 mt-2 text-sm font-medium">
-                  <Building size={16} className="text-slate-400 shrink-0" />
+                <div className="flex items-center gap-2 text-gray-600 mt-2 text-sm">
+                  <Building size={14} className="text-gray-400" />
                   <span>{job.organization}</span>
                 </div>
 
-                {/* Location */}
-                <div className="flex items-center gap-2 text-slate-500 mt-1.5 text-sm font-medium">
-                  <MapPin size={16} className="text-slate-400 shrink-0" />
+                <div className="flex items-center gap-2 text-gray-600 mt-1 text-sm">
+                  <MapPin size={14} className="text-gray-400" />
                   <span>
                     {job.city}, {job.province}
                   </span>
                 </div>
 
-                {/* Start Date */}
-                <div className="flex items-center gap-2 text-slate-500 mt-1.5 text-sm font-medium">
-                  <Calendar size={16} className="text-slate-400 shrink-0" />
-                  <span>Starts: {new Date(job.start_date).toLocaleDateString()}</span>
+                <div className="flex items-center gap-2 text-gray-600 mt-1 text-sm">
+                  <Calendar size={14} className="text-gray-400" />
+                  <span>Starts {new Date(job.start_date).toLocaleDateString()}</span>
                 </div>
 
-                {/* Description Truncated */}
-                <p className="text-slate-600 text-sm mt-4 line-clamp-3 leading-relaxed">
+                <p className="text-gray-600 text-sm mt-4 line-clamp-3 leading-relaxed">
                   {job.description}
                 </p>
               </div>
 
-              {/* Action Buttons */}
-              <div className="mt-6 pt-4 border-t border-slate-50 flex gap-2">
+              <div className="mt-5 pt-4 border-t border-gray-100 flex gap-2">
                 <button
                   onClick={() => setSelectedJob(job)}
-                  className="flex-1 text-center py-2.5 rounded-xl text-slate-700 bg-slate-50 hover:bg-slate-100 font-bold text-xs transition-colors"
+                  className="flex-1 text-center py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium text-sm transition-colors"
                 >
-                  View Details
+                  Details
                 </button>
                 <button
                   onClick={() => {
@@ -330,17 +310,17 @@ export default function StudentJobBoard() {
                     setApplyError("");
                     setResumeFile(null);
                   }}
-                  className="flex-1 text-center py-2.5 rounded-xl text-white bg-[#1a3a5c] hover:bg-[#152e4a] font-bold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                  className="flex-1 text-center py-2 rounded-md text-white bg-gray-900 hover:bg-gray-800 font-medium text-sm transition-colors flex items-center justify-center gap-1.5"
                 >
                   {job.apply_method === "link" ? (
                     <>
                       <ExternalLink size={14} />
-                      Apply Now
+                      Apply
                     </>
                   ) : (
                     <>
                       <Mail size={14} />
-                      Email Contact
+                      Apply
                     </>
                   )}
                 </button>
@@ -349,15 +329,15 @@ export default function StudentJobBoard() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 bg-white rounded-3xl border border-slate-100 shadow-sm max-w-xl mx-auto mt-12">
-          <SlidersHorizontal className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-slate-800">No placements found</h3>
-          <p className="text-slate-500 text-sm mt-1 max-w-md mx-auto">
-            Try adjusting your search criteria or discipline filters.
+        <div className="text-center py-16 bg-white rounded-lg border border-gray-200 shadow-sm max-w-xl mx-auto mt-12">
+          <SlidersHorizontal className="h-8 w-8 text-gray-400 mx-auto mb-3" />
+          <h3 className="text-sm font-medium text-gray-900">No placements found</h3>
+          <p className="text-gray-500 text-sm mt-1 max-w-md mx-auto">
+            Try adjusting your search criteria or filters.
           </p>
           <button
             onClick={clearFilters}
-            className="mt-4 text-[#1a3a5c] hover:text-[#152e4a] font-bold text-sm underline underline-offset-4"
+            className="mt-4 text-gray-900 hover:underline font-medium text-sm"
           >
             Clear all filters
           </button>
@@ -366,129 +346,118 @@ export default function StudentJobBoard() {
 
       {/* Details & Application Modal */}
       {selectedJob && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden border border-slate-100 flex flex-col max-h-[90vh] animate-scale">
-            {/* Modal Header */}
-            <div className="p-6 border-b border-slate-100 flex justify-between items-start bg-slate-50">
+        <div className="fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-2xl rounded-lg shadow-lg overflow-hidden border border-gray-200 flex flex-col max-h-[90vh]">
+            <div className="p-5 border-b border-gray-200 flex justify-between items-start bg-gray-50">
               <div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                <span className="px-2 py-1 rounded-md text-xs font-medium bg-white text-gray-600 border border-gray-200">
                   {selectedJob.discipline}
                 </span>
-                <h2 className="text-2xl font-extrabold text-slate-900 mt-2 leading-snug">
+                <h2 className="text-xl font-bold text-gray-900 mt-2">
                   {selectedJob.title}
                 </h2>
-                <p className="text-sm font-bold text-[#1a3a5c] mt-1">
+                <p className="text-sm font-medium text-gray-600 mt-1">
                   {selectedJob.organization}
                 </p>
               </div>
               <button
                 onClick={() => setSelectedJob(null)}
-                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-all"
+                className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded-md transition-colors"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-6 overflow-y-auto space-y-6 flex-1">
-              {/* Job Info Grid */}
-              <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-sm">
+            <div className="p-5 overflow-y-auto space-y-6 flex-1">
+              <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-md border border-gray-200 text-sm">
                 <div>
-                  <span className="text-slate-400 text-xs block uppercase font-bold tracking-wider">
+                  <span className="text-gray-500 text-xs block font-medium mb-1">
                     Location
                   </span>
-                  <span className="font-bold text-slate-700">
+                  <span className="font-medium text-gray-900">
                     {selectedJob.city}, {selectedJob.province}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 text-xs block uppercase font-bold tracking-wider">
+                  <span className="text-gray-500 text-xs block font-medium mb-1">
                     Compensation
                   </span>
-                  <span className="font-bold text-slate-700">
+                  <span className="font-medium text-gray-900">
                     {selectedJob.compensation}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 text-xs block uppercase font-bold tracking-wider">
+                  <span className="text-gray-500 text-xs block font-medium mb-1">
                     Start Date
                   </span>
-                  <span className="font-bold text-slate-700">
+                  <span className="font-medium text-gray-900">
                     {new Date(selectedJob.start_date).toLocaleDateString()}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 text-xs block uppercase font-bold tracking-wider">
+                  <span className="text-gray-500 text-xs block font-medium mb-1">
                     Eligible Majors
                   </span>
-                  <span className="font-bold text-slate-700">
+                  <span className="font-medium text-gray-900">
                     {selectedJob.majors_eligible || "Kinesiology - All"}
                   </span>
                 </div>
               </div>
 
-              {/* Description */}
               <div>
-                <h3 className="font-bold text-slate-900 mb-2">Position Description</h3>
-                <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-line">
+                <h3 className="font-semibold text-gray-900 mb-2 text-sm">Position Description</h3>
+                <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">
                   {selectedJob.description}
                 </p>
               </div>
 
-              {/* Application Section */}
-              <div className="border-t border-slate-100 pt-6">
-                <h3 className="font-bold text-slate-900 mb-3 flex items-center gap-2">
-                  <FileCheck className="text-emerald-500 h-5 w-5" />
-                  Submit Your Application
+              <div className="border-t border-gray-200 pt-6">
+                <h3 className="font-semibold text-gray-900 mb-4 text-sm flex items-center gap-2">
+                  <CheckCircle className="text-gray-400 h-4 w-4" />
+                  Submit Application
                 </h3>
 
                 {applySuccess ? (
-                  <div className="p-4 bg-emerald-50 border border-emerald-100 text-emerald-800 rounded-2xl flex flex-col gap-3 font-semibold text-sm justify-center items-center py-6 text-center animate-fade">
-                    <CheckCircle className="h-10 w-10 text-emerald-600" />
-                    <div>
-                      <p className="text-base font-extrabold text-emerald-900">
-                        Application Submitted!
-                      </p>
-                      <p className="text-xs text-emerald-700 font-medium mt-1">
-                        Your resume has been successfully uploaded to the CHPH database.
-                      </p>
-                      {selectedJob.apply_method === "link" && (
-                        <div className="mt-4">
-                          <p className="text-xs text-slate-500 font-bold mb-2">
-                            This employer requires external registration:
-                          </p>
-                          <a
-                            href={selectedJob.apply_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 bg-[#1a3a5c] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#152e4a] transition-all"
-                          >
-                            <span>Complete Application on Employer Site</span>
-                            <ExternalLink size={12} />
-                          </a>
-                        </div>
-                      )}
-                      {selectedJob.apply_method === "email" && (
-                        <div className="mt-4 bg-white/50 p-3 rounded-xl border border-emerald-200/50">
-                          <p className="text-xs text-slate-600 font-medium">
-                            Please also email the contact professor directly at:{" "}
-                            <span className="font-bold text-[#1a3a5c]">
-                              {selectedJob.apply_url}
-                            </span>
-                          </p>
-                        </div>
-                      )}
-                    </div>
+                  <div className="p-5 border border-gray-200 rounded-md text-center">
+                    <CheckCircle className="h-8 w-8 text-gray-900 mx-auto mb-2" />
+                    <p className="text-sm font-medium text-gray-900">Application Submitted</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Your resume was successfully uploaded.
+                    </p>
+                    
+                    {selectedJob.apply_method === "link" && (
+                      <div className="mt-4 pt-4 border-t border-gray-100">
+                        <p className="text-xs text-gray-500 mb-2">
+                          Please complete the process on the employer website:
+                        </p>
+                        <a
+                          href={selectedJob.apply_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 bg-gray-900 text-white px-4 py-2 rounded-md text-xs font-medium hover:bg-gray-800 transition-colors"
+                        >
+                          Continue on Employer Site
+                          <ExternalLink size={12} />
+                        </a>
+                      </div>
+                    )}
+                    {selectedJob.apply_method === "email" && (
+                      <div className="mt-4 p-3 bg-gray-50 rounded-md border border-gray-200 text-xs">
+                        <p className="text-gray-600">
+                          Also email the contact directly:{" "}
+                          <span className="font-medium text-gray-900">{selectedJob.apply_url}</span>
+                        </p>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <form onSubmit={handleApplySubmit} className="space-y-4">
                     {applyError && (
-                      <div className="p-4 bg-red-50 text-red-700 border border-red-100 rounded-xl text-xs font-medium">
+                      <div className="p-3 bg-red-50 text-red-700 border border-red-200 rounded-md text-xs">
                         {applyError}
                       </div>
                     )}
 
-                    {/* File Dropzone */}
                     <div className="relative">
                       <input
                         type="file"
@@ -500,55 +469,48 @@ export default function StudentJobBoard() {
                       />
                       <label
                         htmlFor="resume"
-                        className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-slate-200 hover:border-[#1a3a5c] rounded-2xl bg-slate-50/50 hover:bg-slate-50 cursor-pointer transition-all"
+                        className="flex flex-col items-center justify-center p-6 border border-dashed border-gray-300 hover:border-gray-900 rounded-md bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors"
                       >
                         {resumeFile ? (
-                          <div className="flex items-center gap-3 text-slate-700">
-                            <FileText size={32} className="text-[#1a3a5c]" />
+                          <div className="flex items-center gap-3 text-gray-900">
+                            <FileText size={24} className="text-gray-500" />
                             <div className="text-left">
-                              <p className="text-sm font-bold truncate max-w-xs">
+                              <p className="text-sm font-medium truncate max-w-xs">
                                 {resumeFile.name}
                               </p>
-                              <span className="text-xs text-slate-400 font-medium">
+                              <span className="text-xs text-gray-500">
                                 {(resumeFile.size / 1024 / 1024).toFixed(2)} MB
                               </span>
                             </div>
                           </div>
                         ) : (
                           <>
-                            <UploadCloud className="h-8 w-8 text-[#1a3a5c] mb-2" />
-                            <p className="text-sm font-bold text-slate-700">
+                            <UploadCloud className="h-6 w-6 text-gray-400 mb-2" />
+                            <p className="text-sm font-medium text-gray-900">
                               Upload your resume
                             </p>
-                            <p className="text-xs text-slate-400 mt-1">
-                              PDF, DOC, or DOCX up to 10MB
+                            <p className="text-xs text-gray-500 mt-1">
+                              PDF, DOC, or DOCX (Max 10MB)
                             </p>
                           </>
                         )}
                       </label>
                     </div>
 
-                    <div className="flex gap-3 justify-end pt-2">
+                    <div className="flex gap-2 justify-end pt-2">
                       <button
                         type="button"
                         onClick={() => setSelectedJob(null)}
-                        className="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs transition-colors"
+                        className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium text-sm transition-colors"
                       >
                         Cancel
                       </button>
                       <button
                         type="submit"
                         disabled={isApplying}
-                        className="px-5 py-2.5 rounded-xl text-white bg-[#1a3a5c] hover:bg-[#152e4a] font-bold text-xs transition-colors flex items-center gap-1.5 shadow-md disabled:opacity-50"
+                        className="px-4 py-2 rounded-md text-white bg-gray-900 hover:bg-gray-800 font-medium text-sm transition-colors flex items-center gap-2 disabled:opacity-50"
                       >
-                        {isApplying ? (
-                          <>
-                            <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                            Submitting...
-                          </>
-                        ) : (
-                          "Submit Application"
-                        )}
+                        {isApplying ? "Submitting..." : "Submit Application"}
                       </button>
                     </div>
                   </form>

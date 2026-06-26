@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext.jsx";
-import { GraduationCap, ShieldAlert, KeyRound, Mail } from "lucide-react";
 
 export default function Login() {
   const [role, setRole] = useState("student");
@@ -24,11 +23,9 @@ export default function Login() {
       });
 
       if (response.data.success) {
-        // Double check if the logged in user actually has the selected role (or is admin/supervisor bypassing standard restrictions)
         const user = response.data.user;
         
         if (user.role !== role && user.role !== "admin") {
-          // If supervisor tries to log in under supervisor tab, role must match
           setError(`Incorrect role selected. This account is registered as a ${user.role}.`);
           setLoading(false);
           return;
@@ -54,67 +51,55 @@ export default function Login() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-3xl shadow-xl border border-slate-100 relative overflow-hidden">
-        {/* Decorative branding stripe */}
-        <div className="absolute top-0 left-0 right-0 h-2 bg-[#1a3a5c]" />
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 className="mt-6 text-center text-2xl font-bold tracking-tight text-gray-900">
+          Sign in to your account
+        </h2>
+        <p className="mt-2 text-center text-sm text-gray-600">
+          CHPH Internship Portal
+        </p>
+      </div>
 
-        <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-[#1a3a5c]/5 rounded-2xl flex items-center justify-center text-[#1a3a5c] shadow-sm mb-4">
-            <GraduationCap className="h-10 w-10 text-[#1a3a5c]" />
-          </div>
-          <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-            CHPH Internship Portal
-          </h2>
-          <p className="mt-2 text-sm text-slate-500 font-medium">
-            Centre for Human Performance and Health
-          </p>
-        </div>
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow-sm border border-gray-200 sm:rounded-lg sm:px-10">
+          {error && (
+            <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4">
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          )}
 
-        {/* Role Selector Tabs */}
-        <div className="mt-6">
-          <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 text-center">
-            Sign in as
-          </label>
-          <div className="grid grid-cols-4 gap-1 p-1 bg-slate-100 rounded-xl">
-            {roles.map((r) => (
-              <button
-                key={r.id}
-                type="button"
-                onClick={() => setRole(r.id)}
-                className={`py-2 text-xs font-semibold rounded-lg transition-all ${
-                  role === r.id
-                    ? "bg-[#1a3a5c] text-white shadow-sm"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
-                }`}
-              >
-                {r.label}
-              </button>
-            ))}
-          </div>
-        </div>
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                I am a
+              </label>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {roles.map((r) => (
+                  <button
+                    key={r.id}
+                    type="button"
+                    onClick={() => setRole(r.id)}
+                    className={`px-3 py-2 text-xs font-medium rounded-md border ${
+                      role === r.id
+                        ? "bg-gray-900 text-white border-transparent"
+                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                    {r.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        {error && (
-          <div className="p-4 bg-red-50 rounded-2xl border border-red-100 flex gap-3 text-red-700 text-sm font-medium items-start animate-shake">
-            <ShieldAlert className="h-5 w-5 shrink-0 text-red-500" />
-            <span>{error}</span>
-          </div>
-        )}
-
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            {/* Email Field */}
             <div>
               <label
                 htmlFor="email-address"
-                className="block text-sm font-semibold text-slate-700 mb-1"
+                className="block text-sm font-medium text-gray-700"
               >
-                Email Address
+                Email address
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                  <Mail size={18} />
-                </div>
+              <div className="mt-1">
                 <input
                   id="email-address"
                   name="email"
@@ -123,28 +108,19 @@ export default function Login() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={
-                    role === "student" ? "student@uwindsor.ca" : "name@example.com"
-                  }
-                  className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white transition-all text-sm"
+                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-gray-900 sm:text-sm"
                 />
               </div>
             </div>
 
-            {/* Password Field */}
             <div>
-              <div className="flex justify-between items-center mb-1">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-semibold text-slate-700"
-                >
-                  Password
-                </label>
-              </div>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                  <KeyRound size={18} />
-                </div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <div className="mt-1">
                 <input
                   id="password"
                   name="password"
@@ -153,38 +129,43 @@ export default function Login() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white transition-all text-sm"
+                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-gray-900 sm:text-sm"
                 />
               </div>
             </div>
-          </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-3.5 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-[#1a3a5c] hover:bg-[#152e4a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1a3a5c] transition-all shadow-md disabled:opacity-50"
-            >
-              {loading ? (
-                <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              ) : (
-                "Sign In"
-              )}
-            </button>
-          </div>
-        </form>
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex w-full justify-center rounded-md border border-transparent bg-gray-900 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 disabled:opacity-50"
+              >
+                {loading ? "Signing in..." : "Sign in"}
+              </button>
+            </div>
+          </form>
 
-        <div className="text-center pt-2">
-          <p className="text-sm text-slate-500 font-medium">
-            Don't have an account?{" "}
-            <Link
-              to="/register"
-              className="text-[#1a3a5c] hover:text-[#152e4a] font-bold hover:underline underline-offset-4"
-            >
-              Register here
-            </Link>
-          </p>
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-white px-2 text-gray-500">
+                  New to the portal?
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 text-center">
+              <Link
+                to="/register"
+                className="font-medium text-gray-900 hover:text-gray-700"
+              >
+                Create an account
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>

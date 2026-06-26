@@ -13,14 +13,12 @@ import {
   CheckCircle,
   ArrowRight,
   ArrowLeft,
-  DollarSign,
 } from "lucide-react";
 
 export default function EmployerJobForm() {
   const { token, user } = useAuth();
   const [step, setStep] = useState(1);
 
-  // Form Fields State
   const [formData, setFormData] = useState({
     organization: user?.organization || "",
     contact_name: user?.name || "",
@@ -41,7 +39,6 @@ export default function EmployerJobForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Load draft from localStorage on mount
   useEffect(() => {
     const draft = localStorage.getItem("employer_job_draft");
     if (draft) {
@@ -55,10 +52,7 @@ export default function EmployerJobForm() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => {
-      const updated = { ...prev, [name]: value };
-      return updated;
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSaveDraft = () => {
@@ -68,7 +62,6 @@ export default function EmployerJobForm() {
 
   const handleNext = () => {
     setError("");
-    // Basic step validation
     if (step === 1) {
       if (!formData.contact_name || !formData.contact_email || !formData.contact_phone) {
         setError("Please complete all contact details before proceeding.");
@@ -109,8 +102,8 @@ export default function EmployerJobForm() {
       );
 
       if (response.data.success) {
-        localStorage.removeItem("employer_job_draft"); // Clear draft on successful submit
-        setStep(4); // Move to Submitted screen
+        localStorage.removeItem("employer_job_draft");
+        setStep(4);
       }
     } catch (err) {
       console.error("Job submit error:", err);
@@ -149,44 +142,43 @@ export default function EmployerJobForm() {
   return (
     <div className="max-w-3xl mx-auto font-sans">
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-          Submit an Internship Position
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+          Submit Position
         </h1>
-        <p className="text-slate-500 mt-1">
-          Post an internship position for students at the Centre for Human Performance and Health
+        <p className="text-gray-500 mt-1 text-sm">
+          Post an internship position for Kinesiology students
         </p>
       </div>
 
-      {/* 4-Step Progress Indicator */}
       <div className="mb-8">
-        <div className="flex justify-between items-center bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+        <div className="flex justify-between items-center bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
           {[
             { num: 1, label: "Account" },
-            { num: 2, label: "Job Details" },
+            { num: 2, label: "Details" },
             { num: 3, label: "Review" },
-            { num: 4, label: "Submitted" },
+            { num: 4, label: "Done" },
           ].map((s) => (
             <div key={s.num} className="flex items-center gap-2 flex-1 justify-center last:flex-none">
               <div
-                className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${
+                className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
                   step >= s.num
-                    ? "bg-[#1a3a5c] text-white shadow-sm"
-                    : "bg-slate-100 text-slate-400"
+                    ? "bg-gray-900 text-white"
+                    : "bg-gray-100 text-gray-400"
                 }`}
               >
                 {step > s.num && s.num < 4 ? "✓" : s.num}
               </div>
               <span
-                className={`text-xs font-bold transition-colors hidden sm:inline ${
-                  step >= s.num ? "text-slate-800" : "text-slate-400"
+                className={`text-xs font-medium transition-colors hidden sm:inline ${
+                  step >= s.num ? "text-gray-900" : "text-gray-400"
                 }`}
               >
                 {s.label}
               </span>
               {s.num < 4 && (
                 <div
-                  className={`h-0.5 flex-1 mx-2 rounded hidden sm:block ${
-                    step > s.num ? "bg-[#1a3a5c]" : "bg-slate-100"
+                  className={`h-px flex-1 mx-2 hidden sm:block ${
+                    step > s.num ? "bg-gray-900" : "bg-gray-200"
                   }`}
                 />
               )}
@@ -196,30 +188,26 @@ export default function EmployerJobForm() {
       </div>
 
       {error && (
-        <div className="mb-6 p-4 bg-red-50 text-red-700 border border-red-100 rounded-2xl text-sm font-semibold">
+        <div className="mb-6 p-4 bg-red-50 text-red-700 border border-red-200 rounded-lg text-sm">
           {error}
         </div>
       )}
 
-      {/* Wizard Forms Card */}
-      <div className="bg-white rounded-3xl border border-slate-100 shadow-xl overflow-hidden p-8 relative">
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#1a3a5c]" />
-
-        {/* STEP 1: Contact Details */}
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden p-6 relative">
         {step === 1 && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-slate-900 border-b border-slate-50 pb-3 flex items-center gap-2">
-              <User className="text-[#1a3a5c]" />
-              Step 1: Contact & Organization Details
+            <h2 className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-3 uppercase tracking-wide flex items-center gap-2">
+              <User size={16} className="text-gray-400" />
+              Contact Details
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Organization / Company
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <Building size={16} />
                   </div>
                   <input
@@ -227,18 +215,18 @@ export default function EmployerJobForm() {
                     name="organization"
                     value={formData.organization}
                     onChange={handleChange}
-                    placeholder="Windsor Physiotherapy Clinic"
-                    className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white text-sm transition-all"
+                    placeholder="Windsor Physiotherapy"
+                    className="block w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">
-                  Contact Person Name
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Contact Name
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <User size={16} />
                   </div>
                   <input
@@ -248,17 +236,17 @@ export default function EmployerJobForm() {
                     onChange={handleChange}
                     placeholder="John Doe"
                     required
-                    className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white text-sm transition-all"
+                    className="block w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Contact Email
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <Mail size={16} />
                   </div>
                   <input
@@ -268,17 +256,17 @@ export default function EmployerJobForm() {
                     onChange={handleChange}
                     placeholder="john@company.com"
                     required
-                    className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white text-sm transition-all"
+                    className="block w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">
-                  Contact Phone Number
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Phone Number
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <Phone size={16} />
                   </div>
                   <input
@@ -288,44 +276,43 @@ export default function EmployerJobForm() {
                     onChange={handleChange}
                     placeholder="519-555-0199"
                     required
-                    className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white text-sm transition-all"
+                    className="block w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-between pt-6 border-t border-slate-50">
+            <div className="flex justify-between pt-6 border-t border-gray-100">
               <button
                 type="button"
                 onClick={handleSaveDraft}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm transition-all"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium text-sm transition-colors"
               >
-                <Save size={16} />
+                <Save size={14} className="text-gray-500" />
                 Save Draft
               </button>
               <button
                 type="button"
                 onClick={handleNext}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white bg-[#1a3a5c] hover:bg-[#152e4a] font-bold text-sm transition-all shadow-md"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-md text-white bg-gray-900 hover:bg-gray-800 font-medium text-sm transition-colors"
               >
                 Next Step
-                <ArrowRight size={16} />
+                <ArrowRight size={14} />
               </button>
             </div>
           </div>
         )}
 
-        {/* STEP 2: Job Details Form */}
         {step === 2 && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-slate-900 border-b border-slate-50 pb-3 flex items-center gap-2">
-              <FileText className="text-[#1a3a5c]" />
-              Step 2: Internship Position details
+            <h2 className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-3 uppercase tracking-wide flex items-center gap-2">
+              <FileText size={16} className="text-gray-400" />
+              Job Details
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="md:col-span-2">
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Position Title
                 </label>
                 <input
@@ -335,19 +322,19 @@ export default function EmployerJobForm() {
                   onChange={handleChange}
                   placeholder="Clinical Kinesiology Intern"
                   required
-                  className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white text-sm transition-all"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Discipline Category
                 </label>
                 <select
                   name="discipline"
                   value={formData.discipline}
                   onChange={handleChange}
-                  className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white text-sm transition-all font-medium"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
                 >
                   {disciplines.map((d) => (
                     <option key={d} value={d}>
@@ -358,25 +345,25 @@ export default function EmployerJobForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">
-                  Eligible Kinesiology Majors
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Eligible Majors
                 </label>
                 <input
                   type="text"
                   name="majors_eligible"
                   value={formData.majors_eligible}
                   onChange={handleChange}
-                  placeholder="Kinesiology - Movement Science"
-                  className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white text-sm transition-all"
+                  placeholder="Kinesiology - All"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   City
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <MapPin size={16} />
                   </div>
                   <input
@@ -386,20 +373,20 @@ export default function EmployerJobForm() {
                     onChange={handleChange}
                     placeholder="Windsor"
                     required
-                    className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white text-sm transition-all"
+                    className="block w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Province
                 </label>
                 <select
                   name="province"
                   value={formData.province}
                   onChange={handleChange}
-                  className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white text-sm transition-all font-medium"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
                 >
                   {provinces.map((p) => (
                     <option key={p} value={p}>
@@ -410,14 +397,14 @@ export default function EmployerJobForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Compensation
                 </label>
                 <select
                   name="compensation"
                   value={formData.compensation}
                   onChange={handleChange}
-                  className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white text-sm transition-all font-medium"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
                 >
                   <option value="Paid">Paid</option>
                   <option value="Unpaid">Unpaid</option>
@@ -425,11 +412,11 @@ export default function EmployerJobForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Start Date
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <Calendar size={16} />
                   </div>
                   <input
@@ -438,31 +425,31 @@ export default function EmployerJobForm() {
                     value={formData.start_date}
                     onChange={handleChange}
                     required
-                    className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white text-sm transition-all"
+                    className="block w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">
-                  Application Method
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Apply Method
                 </label>
                 <select
                   name="apply_method"
                   value={formData.apply_method}
                   onChange={handleChange}
-                  className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white text-sm transition-all font-medium"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
                 >
-                  <option value="link">Direct Website link</option>
-                  <option value="email">Email Professor / Coordinator</option>
+                  <option value="link">Website Link</option>
+                  <option value="email">Email</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   {formData.apply_method === "link"
                     ? "Application URL"
-                    : "Contact Email for Applications"}
+                    : "Contact Email"}
                 </label>
                 <input
                   type={formData.apply_method === "link" ? "url" : "email"}
@@ -471,179 +458,167 @@ export default function EmployerJobForm() {
                   onChange={handleChange}
                   placeholder={
                     formData.apply_method === "link"
-                      ? "https://company.com/careers"
-                      : "coordinator@uwindsor.ca"
+                      ? "https://..."
+                      : "email@company.com"
                   }
                   required
-                  className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white text-sm transition-all"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
                 />
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">
-                  Position Description
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Description
                 </label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
-                  rows={5}
-                  placeholder="Explain duties, responsibilities, skills required, learning outcomes..."
+                  rows={4}
+                  placeholder="Duties, requirements, skills..."
                   required
-                  className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1a3a5c]/25 focus:border-[#1a3a5c] focus:bg-white text-sm transition-all"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
                 />
               </div>
             </div>
 
-            <div className="flex justify-between pt-6 border-t border-slate-50">
+            <div className="flex justify-between pt-6 border-t border-gray-100">
               <button
                 type="button"
                 onClick={handleBack}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm transition-all"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium text-sm transition-colors"
               >
-                <ArrowLeft size={16} />
+                <ArrowLeft size={14} />
                 Back
               </button>
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={handleSaveDraft}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm transition-all"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium text-sm transition-colors hidden sm:flex"
                 >
-                  <Save size={16} />
+                  <Save size={14} className="text-gray-500" />
                   Save Draft
                 </button>
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white bg-[#1a3a5c] hover:bg-[#152e4a] font-bold text-sm transition-all shadow-md"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-md text-white bg-gray-900 hover:bg-gray-800 font-medium text-sm transition-colors"
                 >
-                  Review Details
-                  <ArrowRight size={16} />
+                  Review
+                  <ArrowRight size={14} />
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* STEP 3: Review Details */}
         {step === 3 && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-slate-900 border-b border-slate-50 pb-3 flex items-center gap-2">
-              <FileText className="text-[#1a3a5c]" />
-              Step 3: Review & Submit Position
+            <h2 className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-3 uppercase tracking-wide flex items-center gap-2">
+              <FileText size={16} className="text-gray-400" />
+              Review & Submit
             </h2>
 
-            <div className="space-y-5 text-sm">
-              {/* Org Details block */}
-              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-3">
-                <h3 className="font-extrabold text-slate-800">Organization & Contact Info</h3>
+            <div className="space-y-4 text-sm">
+              <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
+                <h3 className="font-semibold text-gray-900 mb-3 text-xs uppercase tracking-wider">Contact Info</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <span className="text-slate-400 text-xs block font-bold uppercase">Company</span>
-                    <span className="font-semibold text-slate-700">{formData.organization}</span>
+                    <span className="text-gray-500 text-xs block mb-0.5">Company</span>
+                    <span className="font-medium text-gray-900">{formData.organization}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 text-xs block font-bold uppercase">Contact Name</span>
-                    <span className="font-semibold text-slate-700">{formData.contact_name}</span>
+                    <span className="text-gray-500 text-xs block mb-0.5">Contact</span>
+                    <span className="font-medium text-gray-900">{formData.contact_name}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 text-xs block font-bold uppercase">Contact Email</span>
-                    <span className="font-semibold text-slate-700">{formData.contact_email}</span>
+                    <span className="text-gray-500 text-xs block mb-0.5">Email</span>
+                    <span className="font-medium text-gray-900">{formData.contact_email}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 text-xs block font-bold uppercase">Contact Phone</span>
-                    <span className="font-semibold text-slate-700">{formData.contact_phone}</span>
+                    <span className="text-gray-500 text-xs block mb-0.5">Phone</span>
+                    <span className="font-medium text-gray-900">{formData.contact_phone}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Job Details block */}
-              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-3">
-                <h3 className="font-extrabold text-slate-800">Position Specifications</h3>
+              <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
+                <h3 className="font-semibold text-gray-900 mb-3 text-xs uppercase tracking-wider">Position Info</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <span className="text-slate-400 text-xs block font-bold uppercase">Job Title</span>
-                    <span className="font-semibold text-slate-700">{formData.title}</span>
+                    <span className="text-gray-500 text-xs block mb-0.5">Job Title</span>
+                    <span className="font-medium text-gray-900">{formData.title}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 text-xs block font-bold uppercase">Discipline</span>
-                    <span className="font-semibold text-slate-700">{formData.discipline}</span>
+                    <span className="text-gray-500 text-xs block mb-0.5">Discipline</span>
+                    <span className="font-medium text-gray-900">{formData.discipline}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 text-xs block font-bold uppercase">Location</span>
-                    <span className="font-semibold text-slate-700">{formData.city}, {formData.province}</span>
+                    <span className="text-gray-500 text-xs block mb-0.5">Location</span>
+                    <span className="font-medium text-gray-900">{formData.city}, {formData.province}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 text-xs block font-bold uppercase">Compensation</span>
-                    <span className="font-semibold text-slate-700">{formData.compensation}</span>
+                    <span className="text-gray-500 text-xs block mb-0.5">Compensation</span>
+                    <span className="font-medium text-gray-900">{formData.compensation}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 text-xs block font-bold uppercase">Start Date</span>
-                    <span className="font-semibold text-slate-700">{formData.start_date}</span>
+                    <span className="text-gray-500 text-xs block mb-0.5">Start Date</span>
+                    <span className="font-medium text-gray-900">{formData.start_date}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 text-xs block font-bold uppercase">Eligible Majors</span>
-                    <span className="font-semibold text-slate-700">{formData.majors_eligible}</span>
+                    <span className="text-gray-500 text-xs block mb-0.5">Eligible Majors</span>
+                    <span className="font-medium text-gray-900">{formData.majors_eligible}</span>
                   </div>
                   <div className="col-span-2">
-                    <span className="text-slate-400 text-xs block font-bold uppercase">
-                      {formData.apply_method === "link" ? "Application URL" : "Professor Email"}
-                    </span>
-                    <span className="font-semibold text-[#1a3a5c] break-all">{formData.apply_url}</span>
+                    <span className="text-gray-500 text-xs block mb-0.5">Apply At</span>
+                    <span className="font-medium text-gray-900 break-all">{formData.apply_url}</span>
                   </div>
                   <div className="col-span-2">
-                    <span className="text-slate-400 text-xs block font-bold uppercase">Description</span>
-                    <p className="font-semibold text-slate-600 leading-relaxed whitespace-pre-wrap">
-                      {formData.description}
-                    </p>
+                    <span className="text-gray-500 text-xs block mb-0.5">Description</span>
+                    <p className="font-medium text-gray-700 whitespace-pre-wrap">{formData.description}</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-between pt-6 border-t border-slate-50">
+            <div className="flex justify-between pt-6 border-t border-gray-100">
               <button
                 type="button"
                 onClick={handleBack}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm transition-all"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium text-sm transition-colors"
               >
-                <ArrowLeft size={16} />
+                <ArrowLeft size={14} />
                 Back
               </button>
               <button
                 type="button"
                 onClick={handleSubmit}
                 disabled={loading}
-                className="flex items-center gap-2 px-6 py-3 rounded-xl text-white bg-[#1a3a5c] hover:bg-[#152e4a] font-extrabold text-sm transition-all shadow-md disabled:opacity-50"
+                className="flex items-center gap-2 px-6 py-2 rounded-md text-white bg-gray-900 hover:bg-gray-800 font-medium text-sm transition-colors disabled:opacity-50"
               >
-                {loading ? (
-                  <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  "Submit Position"
-                )}
+                {loading ? "Submitting..." : "Submit Position"}
               </button>
             </div>
           </div>
         )}
 
-        {/* STEP 4: Success / Submitted State */}
         {step === 4 && (
-          <div className="py-8 text-center space-y-6 animate-scale">
-            <div className="mx-auto h-16 w-16 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-500 shadow-sm">
-              <CheckCircle className="h-10 w-10 text-emerald-600" />
+          <div className="py-12 text-center space-y-6">
+            <div className="mx-auto h-12 w-12 bg-gray-50 border border-gray-200 rounded-full flex items-center justify-center">
+              <CheckCircle className="h-6 w-6 text-gray-900" />
             </div>
             
             <div className="space-y-2">
-              <h2 className="text-2xl font-extrabold text-slate-900">
-                Job Submitted Successfully!
+              <h2 className="text-xl font-bold text-gray-900">
+                Position Submitted
               </h2>
-              <p className="text-slate-500 max-w-md mx-auto text-sm leading-relaxed">
-                Thank you! Your internship listing has been submitted and is currently pending review by the Centre for Human Performance and Health (CHPH) supervisor.
+              <p className="text-gray-500 max-w-sm mx-auto text-sm leading-relaxed">
+                Your internship listing has been submitted and is pending review by a CHPH supervisor.
               </p>
             </div>
 
-            <div className="pt-6">
+            <div className="pt-4">
               <button
                 type="button"
                 onClick={() => {
@@ -665,9 +640,9 @@ export default function EmployerJobForm() {
                   });
                   setStep(1);
                 }}
-                className="px-6 py-2.5 rounded-xl border border-slate-200 text-[#1a3a5c] hover:bg-[#1a3a5c]/5 font-bold text-sm transition-all"
+                className="px-4 py-2 rounded-md border border-gray-300 text-gray-900 hover:bg-gray-50 font-medium text-sm transition-colors"
               >
-                Submit Another Position
+                Submit Another
               </button>
             </div>
           </div>

@@ -36,32 +36,32 @@ export default function StudentApplications() {
     switch (status) {
       case "submitted":
         return (
-          <span className="px-3 py-1 text-xs font-bold rounded-full bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-wider">
+          <span className="px-2.5 py-1 text-xs font-medium rounded-md bg-gray-100 text-gray-800 border border-gray-200">
             Submitted
           </span>
         );
       case "under_review":
         return (
-          <span className="px-3 py-1 text-xs font-bold rounded-full bg-amber-50 text-amber-700 border border-amber-100 uppercase tracking-wider">
+          <span className="px-2.5 py-1 text-xs font-medium rounded-md bg-gray-100 text-gray-800 border border-gray-200">
             Under Review
           </span>
         );
       case "accepted":
         return (
-          <span className="px-3 py-1 text-xs font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 uppercase tracking-wider flex items-center gap-1 shrink-0">
+          <span className="px-2.5 py-1 text-xs font-medium rounded-md bg-gray-900 text-white border border-gray-900 flex items-center gap-1 shrink-0">
             <CheckCircle2 size={12} />
             Accepted
           </span>
         );
       case "rejected":
         return (
-          <span className="px-3 py-1 text-xs font-bold rounded-full bg-red-50 text-red-700 border border-red-100 uppercase tracking-wider">
+          <span className="px-2.5 py-1 text-xs font-medium rounded-md bg-white text-gray-600 border border-gray-300">
             Rejected
           </span>
         );
       default:
         return (
-          <span className="px-3 py-1 text-xs font-bold rounded-full bg-slate-100 text-slate-700 uppercase tracking-wider">
+          <span className="px-2.5 py-1 text-xs font-medium rounded-md bg-gray-100 text-gray-700 border border-gray-200">
             {status}
           </span>
         );
@@ -71,10 +71,10 @@ export default function StudentApplications() {
   return (
     <div className="max-w-4xl mx-auto font-sans">
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
           My Applications
         </h1>
-        <p className="text-slate-500 mt-1">
+        <p className="text-gray-500 mt-1 text-sm">
           Track the status of your submitted internship applications
         </p>
       </div>
@@ -84,12 +84,12 @@ export default function StudentApplications() {
           {[1, 2, 3].map((n) => (
             <div
               key={n}
-              className="bg-white rounded-2xl p-6 border border-slate-100 animate-pulse h-32"
+              className="bg-white rounded-lg p-5 border border-gray-200 animate-pulse h-28"
             ></div>
           ))}
         </div>
       ) : error ? (
-        <div className="p-4 bg-red-50 text-red-700 border border-red-100 rounded-2xl text-sm font-semibold">
+        <div className="p-4 bg-red-50 text-red-700 border border-red-200 rounded-lg text-sm">
           {error}
         </div>
       ) : applications.length > 0 ? (
@@ -97,48 +97,46 @@ export default function StudentApplications() {
           {applications.map((app) => (
             <div
               key={app.id}
-              className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-slate-200 transition-all"
+              className="bg-white rounded-lg p-5 border border-gray-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-gray-300 transition-colors"
             >
-              <div className="space-y-1.5 flex-1">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <div className="space-y-1 flex-1">
+                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
                   {app.discipline}
                 </span>
-                <h3 className="text-xl font-extrabold text-slate-900 leading-snug">
+                <h3 className="text-lg font-bold text-gray-900 leading-snug">
                   {app.title}
                 </h3>
-                <p className="text-sm font-bold text-[#1a3a5c]">{app.organization}</p>
+                <p className="text-sm font-medium text-gray-600">{app.organization}</p>
                 
-                {/* Meta details */}
-                <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-slate-500 pt-2 font-medium">
+                <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-gray-500 pt-2">
                   <span className="flex items-center gap-1">
-                    <MapPin size={14} className="text-slate-400" />
+                    <MapPin size={12} className="text-gray-400" />
                     {app.city}, {app.province}
                   </span>
                   <span className="flex items-center gap-1">
-                    <Calendar size={14} className="text-slate-400" />
+                    <Calendar size={12} className="text-gray-400" />
                     Applied: {new Date(app.applied_at).toLocaleDateString()}
                   </span>
                   <span className="flex items-center gap-1">
-                    <FileText size={14} className="text-slate-400" />
-                    Resume: {app.resume_path.split("/").pop().slice(7)} {/* Truncate prefix */}
+                    <FileText size={12} className="text-gray-400" />
+                    Resume: {app.resume_path.split("/").pop().slice(7)}
                   </span>
                 </div>
               </div>
 
-              {/* Status and Action block */}
-              <div className="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-auto gap-3 shrink-0 pt-4 md:pt-0 border-t md:border-0 border-slate-50">
+              <div className="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-auto gap-3 shrink-0 pt-4 md:pt-0 border-t md:border-0 border-gray-100">
                 {getStatusBadge(app.status)}
                 
                 {app.status === "accepted" && (
-                  <div className="text-xs text-[#1a3a5c] font-bold bg-[#1a3a5c]/5 px-3 py-1.5 rounded-xl border border-[#1a3a5c]/10 flex items-center gap-1">
+                  <div className="text-xs text-gray-700 font-medium bg-gray-50 px-3 py-1.5 rounded-md border border-gray-200 flex items-center gap-1.5">
                     {app.apply_method === "link" ? (
                       <>
-                        <ExternalLink size={12} />
-                        <span>External Portal Active</span>
+                        <ExternalLink size={12} className="text-gray-500" />
+                        <span>External Portal</span>
                       </>
                     ) : (
                       <>
-                        <Mail size={12} />
+                        <Mail size={12} className="text-gray-500" />
                         <span>Contact Initiated</span>
                       </>
                     )}
@@ -149,10 +147,10 @@ export default function StudentApplications() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 bg-white rounded-3xl border border-slate-100 shadow-sm max-w-md mx-auto mt-12">
-          <ClipboardCheck className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-slate-800">No applications yet</h3>
-          <p className="text-slate-500 text-sm mt-1">
+        <div className="text-center py-16 bg-white rounded-lg border border-gray-200 shadow-sm max-w-md mx-auto mt-12">
+          <ClipboardCheck className="h-8 w-8 text-gray-400 mx-auto mb-3" />
+          <h3 className="text-sm font-medium text-gray-900">No applications yet</h3>
+          <p className="text-gray-500 text-sm mt-1">
             Browse our job board to find and apply to placements.
           </p>
         </div>
