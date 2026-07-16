@@ -48,11 +48,13 @@ import authRoutes from "./routes/auth.routes.js";
 import jobsRoutes from "./routes/jobs.routes.js";
 import applicationsRoutes from "./routes/applications.routes.js";
 import analyticsRoutes from "./routes/analytics.routes.js";
+import usersRoutes from "./routes/users.routes.js";
 // Register routes
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobsRoutes);
 app.use("/api/applications", applicationsRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/users", usersRoutes);
 
 // Global Error Handler Middleware
 app.use((err, req, res, next) => {
