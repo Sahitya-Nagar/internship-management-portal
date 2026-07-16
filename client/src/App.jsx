@@ -10,6 +10,8 @@ import EmployerJobForm from "./pages/EmployerJobForm.jsx";
 import EmployerListings from "./pages/EmployerListings.jsx";
 import SupervisorReview from "./pages/SupervisorReview.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
+import AdminEmployers from "./pages/AdminEmployers.jsx";
+import AdminPlacements from "./pages/AdminPlacements.jsx";
 
 // Helper layout component that handles conditional sidebar rendering and padding
 function Layout() {
@@ -85,6 +87,22 @@ function Layout() {
             element={
               <ProtectedRoute allowedRoles={["admin", "supervisor"]}>
                 <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/employers"
+            element={
+              <ProtectedRoute allowedRoles={["admin", "supervisor"]}>
+                <AdminEmployers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/placements"
+            element={
+              <ProtectedRoute allowedRoles={["admin", "supervisor"]}>
+                <AdminPlacements />
               </ProtectedRoute>
             }
           />

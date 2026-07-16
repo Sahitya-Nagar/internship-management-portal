@@ -91,6 +91,10 @@ export default function Sidebar() {
                 <ShieldCheck size={16} className={isActive("/supervisor/review") ? "text-gray-900" : "text-gray-400"} />
                 <span>Reviews</span>
               </Link>
+              <Link to="/admin/employers" className={linkClass("/admin/employers")}>
+                <Building2 size={16} className={isActive("/admin/employers") ? "text-gray-900" : "text-gray-400"} />
+                <span>Employers</span>
+              </Link>
               <Link to="/admin/dashboard" className={linkClass("/admin/dashboard")}>
                 <LayoutDashboard size={16} className={isActive("/admin/dashboard") ? "text-gray-900" : "text-gray-400"} />
                 <span>Analytics</span>
@@ -107,6 +111,10 @@ export default function Sidebar() {
               <Link to="/supervisor/review" className={linkClass("/supervisor/review")}>
                 <ShieldCheck size={16} className={isActive("/supervisor/review") ? "text-gray-900" : "text-gray-400"} />
                 <span>Reviews</span>
+              </Link>
+              <Link to="/admin/employers" className={linkClass("/admin/employers")}>
+                <Building2 size={16} className={isActive("/admin/employers") ? "text-gray-900" : "text-gray-400"} />
+                <span>Employers</span>
               </Link>
             </>
           )}

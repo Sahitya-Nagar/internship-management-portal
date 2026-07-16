@@ -1,10 +1,29 @@
-import pg from "pg";
+import { Pool, neonConfig } from "@neondatabase/serverless";
+import ws from "ws";
 import bcrypt from "bcrypt";
 
-const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL || "postgresql://neondb_owner:npg_oSflkItbG71Q@ep-autumn-cherry-aq81jo20-pooler.c-8.us-east-1.aws.neon.tech/neondb?sslmode=require",
-  ssl: { rejectUnauthorized: false },
-  connectionTimeoutMillis: 10000,
+// Configure WebSockets for environments without native WebSocket support (like Node.js)
+neonConfig.webSocketConstructor = ws;
+
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  console.error("FATAL: DATABASE_URL is not set. Check your .env file and ensure dotenv loads before this module.");
+  process.exit(1);
+}
+
+console.log("Connecting to database over WebSockets:", connectionString.replace(/:[^:@]+@/, ":****@"));
+
+const pool = new Pool({
+  connectionString,
+  connectionTimeoutMillis: 30000,
+  idleTimeoutMillis: 30000,
+  max: 10,
+});
+
+// Log pool errors so they don't crash the process
+pool.on("error", (err) => {
+  console.error("Unexpected database pool error:", err.message);
 });
 
 export const query = (text, params) => pool.query(text, params);

@@ -1,5 +1,10 @@
-import app from "./src/app.js";
-import { initDb } from "./src/utils/db.js";
+import dotenv from "dotenv";
+dotenv.config();
+
+// Use dynamic imports so that dotenv.config() runs BEFORE
+// db.js reads process.env.DATABASE_URL at module load time.
+const { default: app } = await import("./src/app.js");
+const { initDb } = await import("./src/utils/db.js");
 
 const PORT = process.env.PORT || 5000;
 
@@ -13,4 +18,4 @@ initDb()
   .catch((err) => {
     console.error("Failed to initialize database on startup", err);
     process.exit(1);
-  });
+  });
