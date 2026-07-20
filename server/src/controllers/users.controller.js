@@ -43,3 +43,42 @@ export const getPlacements = async (req, res) => {
     });
   }
 };
+
+export const getStudents = async (req, res) => {
+  try {
+    const { rows } = await query(
+      `SELECT 
+        u.id,
+        u.name as student_name,
+        u.email,
+        u.major,
+        u.created_at,
+        p.id as placement_id,
+        p.employer_name,
+        p.city,
+        p.province,
+        p.discipline,
+        p.compensation,
+        p.semester,
+        p.academic_year,
+        p.placed_at,
+        j.title as job_title
+       FROM users u
+       LEFT JOIN placements p ON p.student_id = u.id
+       LEFT JOIN jobs j ON p.job_id = j.id
+       WHERE u.role = 'student' AND p.id IS NOT NULL
+       ORDER BY p.placed_at DESC, u.name ASC`
+    );
+
+    return res.json({
+      success: true,
+      data: rows,
+    });
+  } catch (error) {
+    console.error("Error fetching students:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error while fetching students list",
+    });
+  }
+};

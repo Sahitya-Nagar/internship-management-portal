@@ -1,149 +1,70 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Login() {
-  const [role, setRole] = useState("student");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
-        email,
-        password,
-      });
-
-      if (response.data.success) {
-        const user = response.data.user;
-        
-        if (user.role !== role && user.role !== "admin") {
-          setError(`Incorrect role selected. This account is registered as a ${user.role}.`);
-          setLoading(false);
-          return;
-        }
-
-        login(response.data.token, user);
-      }
-    } catch (err) {
-      console.error("Login failure:", err);
-      setError(
-        err.response?.data?.message || "Invalid credentials. Please try again."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const roles = [
-    { id: "student", label: "Student" },
-    { id: "employer", label: "Employer" },
-    { id: "supervisor", label: "Supervisor" },
-    { id: "admin", label: "Admin" },
+  const portals = [
+    { 
+      id: "student", 
+      label: "Student", 
+      path: "/login/student",
+      description: "Access your job applications and internship opportunities"
+    },
+    { 
+      id: "employer", 
+      label: "Employer", 
+      path: "/login/employer",
+      description: "Post positions and manage applications"
+    },
+    { 
+      id: "supervisor", 
+      label: "Supervisor", 
+      path: "/login/supervisor",
+      description: "Review and approve internship placements"
+    },
+    { 
+      id: "admin", 
+      label: "Administrator", 
+      path: "/login/admin",
+      description: "Manage the entire portal system"
+    },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-2xl font-bold tracking-tight text-gray-900">
-          Sign in to your account
+      <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
+        <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+          CHPH Internship Portal
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          CHPH Internship Portal
+          Select your portal to continue
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-2xl">
         <div className="bg-white py-8 px-4 shadow-sm border border-gray-200 sm:rounded-lg sm:px-10">
-          {error && (
-            <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4">
-              <p className="text-sm text-red-700">{error}</p>
-            </div>
-          )}
-
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                I am a
-              </label>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {roles.map((r) => (
-                  <button
-                    key={r.id}
-                    type="button"
-                    onClick={() => setRole(r.id)}
-                    className={`px-3 py-2 text-xs font-medium rounded-md border ${
-                      role === r.id
-                        ? "bg-gray-900 text-white border-transparent"
-                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    {r.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="email-address"
-                className="block text-sm font-medium text-gray-700"
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {portals.map((portal) => (
+              <Link
+                key={portal.id}
+                to={portal.path}
+                className="group relative flex flex-col p-6 border border-gray-300 rounded-lg hover:border-gray-900 hover:shadow-md transition-all"
               >
-                Email address
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email-address"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-gray-900 sm:text-sm"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-gray-900 sm:text-sm"
-                />
-              </div>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex w-full justify-center rounded-md border border-transparent bg-gray-900 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 disabled:opacity-50"
-              >
-                {loading ? "Signing in..." : "Sign in"}
-              </button>
-            </div>
-          </form>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-gray-700">
+                    {portal.label}
+                  </h3>
+                  <p className="mt-2 text-sm text-gray-600">
+                    {portal.description}
+                  </p>
+                </div>
+                <div className="mt-4 flex items-center text-sm font-medium text-gray-900 group-hover:text-gray-700">
+                  Continue
+                  <svg className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </Link>
+            ))}
+          </div>
 
           <div className="mt-6">
             <div className="relative">

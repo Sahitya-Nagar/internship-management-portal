@@ -3,6 +3,10 @@ import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Login from "./pages/Login.jsx";
+import LoginStudent from "./pages/LoginStudent.jsx";
+import LoginEmployer from "./pages/LoginEmployer.jsx";
+import LoginSupervisor from "./pages/LoginSupervisor.jsx";
+import LoginAdmin from "./pages/LoginAdmin.jsx";
 import Register from "./pages/Register.jsx";
 import StudentJobBoard from "./pages/StudentJobBoard.jsx";
 import StudentApplications from "./pages/StudentApplications.jsx";
@@ -11,13 +15,14 @@ import EmployerListings from "./pages/EmployerListings.jsx";
 import SupervisorReview from "./pages/SupervisorReview.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import AdminEmployers from "./pages/AdminEmployers.jsx";
+import AdminStudents from "./pages/AdminStudents.jsx";
 import AdminPlacements from "./pages/AdminPlacements.jsx";
 
 // Helper layout component that handles conditional sidebar rendering and padding
 function Layout() {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
-  const isPublicPage = ["/login", "/register"].includes(location.pathname);
+  const isPublicPage = ["/login", "/login/student", "/login/employer", "/login/supervisor", "/login/admin", "/register"].includes(location.pathname);
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
@@ -32,7 +37,11 @@ function Layout() {
       >
         <Routes>
           {/* Public Authentication routes */}
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<LoginStudent />} />
+          <Route path="/login/student" element={<LoginStudent />} />
+          <Route path="/login/employer" element={<LoginEmployer />} />
+          <Route path="/login/supervisor" element={<LoginSupervisor />} />
+          <Route path="/login/admin" element={<LoginAdmin />} />
           <Route path="/register" element={<Register />} />
 
           {/* Student Protected routes */}
@@ -95,6 +104,14 @@ function Layout() {
             element={
               <ProtectedRoute allowedRoles={["admin", "supervisor"]}>
                 <AdminEmployers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/students"
+            element={
+              <ProtectedRoute allowedRoles={["admin", "supervisor"]}>
+                <AdminStudents />
               </ProtectedRoute>
             }
           />
