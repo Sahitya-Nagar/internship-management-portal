@@ -10,6 +10,7 @@ import {
   Building2,
   ShieldCheck,
   User,
+  Users,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -95,6 +96,10 @@ export default function Sidebar() {
                 <Building2 size={16} className={isActive("/admin/employers") ? "text-gray-900" : "text-gray-400"} />
                 <span>Employers</span>
               </Link>
+              <Link to="/admin/students" className={linkClass("/admin/students")}>
+                <Users size={16} className={isActive("/admin/students") ? "text-gray-900" : "text-gray-400"} />
+                <span>Students</span>
+              </Link>
               <Link to="/admin/dashboard" className={linkClass("/admin/dashboard")}>
                 <LayoutDashboard size={16} className={isActive("/admin/dashboard") ? "text-gray-900" : "text-gray-400"} />
                 <span>Analytics</span>
@@ -115,6 +120,10 @@ export default function Sidebar() {
               <Link to="/admin/employers" className={linkClass("/admin/employers")}>
                 <Building2 size={16} className={isActive("/admin/employers") ? "text-gray-900" : "text-gray-400"} />
                 <span>Employers</span>
+              </Link>
+              <Link to="/admin/students" className={linkClass("/admin/students")}>
+                <Users size={16} className={isActive("/admin/students") ? "text-gray-900" : "text-gray-400"} />
+                <span>Students</span>
               </Link>
             </>
           )}
