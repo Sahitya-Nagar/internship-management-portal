@@ -24,8 +24,8 @@ export default function Sidebar() {
   const linkClass = (path) =>
     `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
       isActive(path)
-        ? "bg-gray-100 text-gray-900"
-        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+        ? "bg-lancer-blue-50 text-lancer-blue-900"
+        : "text-gray-600 hover:bg-gray-50 hover:text-lancer-blue-900"
     }`;
 
   return (
@@ -33,7 +33,7 @@ export default function Sidebar() {
       <div>
         {/* Branding header */}
         <div className="px-6 py-5 border-b border-gray-200">
-          <h1 className="text-lg font-bold text-gray-900">
+          <h1 className="text-lg font-bold text-lancer-blue-900">
             CHPH Portal
           </h1>
           <p className="text-xs text-gray-500 uppercase tracking-wider mt-0.5">
@@ -48,7 +48,7 @@ export default function Sidebar() {
               <User className="h-4 w-4 text-gray-600" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">
+              <p className="text-sm font-medium text-lancer-blue-900 truncate">
                 {user.name}
               </p>
               <p className="text-xs text-gray-500 capitalize">
@@ -110,20 +110,24 @@ export default function Sidebar() {
           {user.role === "admin" && (
             <>
               <Link to="/admin/dashboard" className={linkClass("/admin/dashboard")}>
-                <LayoutDashboard size={16} className={isActive("/admin/dashboard") ? "text-gray-900" : "text-gray-400"} />
+                <LayoutDashboard size={16} className={isActive("/admin/dashboard") ? "text-lancer-blue-900" : "text-gray-400"} />
                 <span>Analytics</span>
               </Link>
               <Link to="/supervisor/review" className={linkClass("/supervisor/review")}>
-                <ShieldCheck size={16} className={isActive("/supervisor/review") ? "text-gray-900" : "text-gray-400"} />
+                <ShieldCheck size={16} className={isActive("/supervisor/review") ? "text-lancer-blue-900" : "text-gray-400"} />
                 <span>Reviews</span>
               </Link>
               <Link to="/admin/employers" className={linkClass("/admin/employers")}>
-                <Building2 size={16} className={isActive("/admin/employers") ? "text-gray-900" : "text-gray-400"} />
+                <Building2 size={16} className={isActive("/admin/employers") ? "text-lancer-blue-900" : "text-gray-400"} />
                 <span>Employers</span>
               </Link>
               <Link to="/admin/students" className={linkClass("/admin/students")}>
-                <Users size={16} className={isActive("/admin/students") ? "text-gray-900" : "text-gray-400"} />
+                <Users size={16} className={isActive("/admin/students") ? "text-lancer-blue-900" : "text-gray-400"} />
                 <span>Students</span>
+              </Link>
+              <Link to="/admin/placements" className={linkClass("/admin/placements")}>
+                <ClipboardList size={16} className={isActive("/admin/placements") ? "text-lancer-blue-900" : "text-gray-400"} />
+                <span>Placements</span>
               </Link>
             </>
           )}

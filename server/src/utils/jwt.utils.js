@@ -1,6 +1,11 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "chph_kinesiology_secret_key_2026";
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET || JWT_SECRET.length < 32) {
+  console.error('FATAL: JWT_SECRET must be set in .env file and be at least 32 characters long');
+  process.exit(1);
+}
 
 export const generateToken = (user) => {
   return jwt.sign(

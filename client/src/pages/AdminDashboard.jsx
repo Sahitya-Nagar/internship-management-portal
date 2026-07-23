@@ -31,6 +31,15 @@ export default function AdminDashboard() {
   const [semesters, setSemesters] = useState([]);
   const [selectedSemester, setSelectedSemester] = useState("");
 
+  const formatSemester = (semesterStr) => {
+    if (!semesterStr) return "";
+    const parts = semesterStr.split(" ");
+    if (parts.length === 2) {
+      return `${parts[0].charAt(0).toUpperCase()}-${parts[1].slice(-2)}`;
+    }
+    return semesterStr;
+  };
+
   // Analytics states
   const [summary, setSummary] = useState({
     studentsPlaced: 0,
@@ -173,7 +182,7 @@ export default function AdminDashboard() {
               <option value="">Overall Placements</option>
               {semesters.map((s) => (
                 <option key={s} value={s}>
-                  Semester: {s}
+                  {formatSemester(s)}
                 </option>
               ))}
             </select>
@@ -205,7 +214,7 @@ export default function AdminDashboard() {
           University of Windsor • Centre for Human Performance and Health
         </p>
         <p className="text-xs text-gray-400 mt-0.5">
-          Report Semester: {selectedSemester || "Overall Placements"} • Date Created:{" "}
+          Report Semester: {selectedSemester ? formatSemester(selectedSemester) : "Overall Placements"} • Date Created:{" "}
           {new Date().toLocaleDateString()}
         </p>
       </div>

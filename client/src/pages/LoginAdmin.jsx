@@ -108,7 +108,7 @@ export default function LoginAdmin() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex w-full justify-center rounded-md border border-transparent bg-gray-900 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 disabled:opacity-50"
+                className="flex w-full justify-center rounded-md border border-transparent bg-lancer-blue-900 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-lancer-blue-800 focus:outline-none focus:ring-2 focus:ring-lancer-blue-900 focus:ring-offset-2 disabled:opacity-50"
               >
                 {loading ? "Signing in..." : "Sign in as Administrator"}
               </button>

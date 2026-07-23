@@ -4,36 +4,33 @@ export const getSummary = async (req, res) => {
   const { semester } = req.query;
 
   try {
-    // Students placed (rows in test_data)
-    let placedSql = "SELECT COUNT(*)::int as count FROM test_data";
+    let placedSql = "SELECT COUNT(*)::int as count FROM placements";
     let placedParams = [];
     if (semester) {
-      placedSql += " WHERE semester = $1";
+      placedSql += " WHERE CONCAT(semester, ' ', academic_year) = $1";
       placedParams.push(semester);
     }
     const { rows: placedRes } = await query(placedSql, placedParams);
     const studentsPlaced = placedRes[0]?.count || 0;
 
-    // Unique employers
-    let empSql = "SELECT COUNT(DISTINCT employer)::int as count FROM test_data";
+    let empSql = "SELECT COUNT(DISTINCT employer_name)::int as count FROM placements";
     let empParams = [];
     if (semester) {
-      empSql += " WHERE semester = $1";
+      empSql += " WHERE CONCAT(semester, ' ', academic_year) = $1";
       empParams.push(semester);
     }
     const { rows: empRes } = await query(empSql, empParams);
     const activeEmployers = empRes[0]?.count || 0;
 
-    // Paid percentage (payment field: 'Paid' / 'Volunteer')
     let paidSql = `
       SELECT 
         COUNT(*)::int as total,
-        COUNT(CASE WHEN payment ILIKE 'Paid' THEN 1 END)::int as paid
-      FROM test_data
+        COUNT(CASE WHEN compensation ILIKE 'Paid' THEN 1 END)::int as paid
+      FROM placements
     `;
     let paidParams = [];
     if (semester) {
-      paidSql += " WHERE semester = $1";
+      paidSql += " WHERE CONCAT(semester, ' ', academic_year) = $1";
       paidParams.push(semester);
     }
     const { rows: paidRes } = await query(paidSql, paidParams);
@@ -43,8 +40,7 @@ export const getSummary = async (req, res) => {
       ? Math.round((paidPlacements / totalPlacements) * 100)
       : 0;
 
-    // All-time total
-    const { rows: allTimeRes } = await query("SELECT COUNT(*)::int as count FROM test_data");
+    const { rows: allTimeRes } = await query("SELECT COUNT(*)::int as count FROM placements");
     const allTimeTotal = allTimeRes[0]?.count || 0;
 
     return res.json({
@@ -69,13 +65,13 @@ export const getByDiscipline = async (req, res) => {
   const { semester } = req.query;
 
   try {
-    let sql = "SELECT profession as discipline, COUNT(*)::int as count FROM test_data";
+    let sql = "SELECT discipline, COUNT(*)::int as count FROM placements";
     const params = [];
     if (semester) {
-      sql += " WHERE semester = $1";
+      sql += " WHERE CONCAT(semester, ' ', academic_year) = $1";
       params.push(semester);
     }
-    sql += " GROUP BY profession ORDER BY count DESC";
+    sql += " GROUP BY discipline ORDER BY count DESC";
 
     const { rows } = await query(sql, params);
     return res.json({
@@ -95,10 +91,10 @@ export const getByCity = async (req, res) => {
   const { semester } = req.query;
 
   try {
-    let sql = "SELECT city, COUNT(*)::int as count FROM test_data";
+    let sql = "SELECT city, COUNT(*)::int as count FROM placements";
     const params = [];
     if (semester) {
-      sql += " WHERE semester = $1";
+      sql += " WHERE CONCAT(semester, ' ', academic_year) = $1";
       params.push(semester);
     }
     sql += " GROUP BY city ORDER BY count DESC";
@@ -121,13 +117,13 @@ export const getPaidUnpaid = async (req, res) => {
   const { semester } = req.query;
 
   try {
-    let sql = "SELECT payment as compensation, COUNT(*)::int as count FROM test_data";
+    let sql = "SELECT compensation, COUNT(*)::int as count FROM placements";
     const params = [];
     if (semester) {
-      sql += " WHERE semester = $1";
+      sql += " WHERE CONCAT(semester, ' ', academic_year) = $1";
       params.push(semester);
     }
-    sql += " GROUP BY payment ORDER BY count DESC";
+    sql += " GROUP BY compensation ORDER BY count DESC";
 
     const { rows } = await query(sql, params);
 
@@ -153,13 +149,13 @@ export const getTopEmployers = async (req, res) => {
   const { semester } = req.query;
 
   try {
-    let sql = "SELECT employer as employer_name, COUNT(*)::int as count FROM test_data";
+    let sql = "SELECT employer_name, COUNT(*)::int as count FROM placements";
     const params = [];
     if (semester) {
-      sql += " WHERE semester = $1";
+      sql += " WHERE CONCAT(semester, ' ', academic_year) = $1";
       params.push(semester);
     }
-    sql += " GROUP BY employer ORDER BY count DESC LIMIT 10";
+    sql += " GROUP BY employer_name ORDER BY count DESC LIMIT 10";
 
     const { rows } = await query(sql, params);
     return res.json({
@@ -177,10 +173,19 @@ export const getTopEmployers = async (req, res) => {
 
 export const getSemesters = async (req, res) => {
   try {
-    const { rows } = await query(
-      "SELECT DISTINCT semester FROM test_data ORDER BY semester DESC"
-    );
-    const semestersList = rows.map(r => r.semester);
+    const { rows } = await query(`
+      SELECT DISTINCT semester, academic_year, CONCAT(semester, ' ', academic_year) as semester_str 
+      FROM placements 
+      ORDER BY 
+        academic_year DESC, 
+        CASE semester 
+          WHEN 'Fall' THEN 3 
+          WHEN 'Summer' THEN 2 
+          WHEN 'Winter' THEN 1 
+          ELSE 0 
+        END DESC
+    `);
+    const semestersList = rows.map(r => r.semester_str);
     return res.json({
       success: true,
       data: semestersList,

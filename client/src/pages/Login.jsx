@@ -29,34 +29,34 @@ export default function Login() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-lancer-blue-50 to-lancer-gold-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
       <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
-        <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-          CHPH Internship Portal
+        <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-lancer-blue-700">
+          UWindsor Kinesiology Internship Portal
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
+        <p className="mt-2 text-center text-sm text-lancer-blue-600 font-medium">
           Select your portal to continue
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-2xl">
-        <div className="bg-white py-8 px-4 shadow-sm border border-gray-200 sm:rounded-lg sm:px-10">
+        <div className="bg-white py-8 px-4 shadow-lg border border-lancer-blue-100 sm:rounded-lg sm:px-10">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {portals.map((portal) => (
               <Link
                 key={portal.id}
                 to={portal.path}
-                className="group relative flex flex-col p-6 border border-gray-300 rounded-lg hover:border-gray-900 hover:shadow-md transition-all"
+                className="group relative flex flex-col p-6 border-2 border-lancer-blue-200 rounded-lg hover:border-lancer-blue-500 hover:shadow-lg hover:bg-lancer-blue-50 transition-all"
               >
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-gray-700">
+                  <h3 className="text-lg font-semibold text-lancer-blue-700 group-hover:text-lancer-blue-600">
                     {portal.label}
                   </h3>
                   <p className="mt-2 text-sm text-gray-600">
                     {portal.description}
                   </p>
                 </div>
-                <div className="mt-4 flex items-center text-sm font-medium text-gray-900 group-hover:text-gray-700">
+                <div className="mt-4 flex items-center text-sm font-medium text-lancer-blue-600 group-hover:text-lancer-blue-500">
                   Continue
                   <svg className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -81,7 +81,7 @@ export default function Login() {
             <div className="mt-6 text-center">
               <Link
                 to="/register"
-                className="font-medium text-gray-900 hover:text-gray-700"
+                className="font-medium text-lancer-blue-600 hover:text-lancer-blue-500"
               >
                 Create an account
               </Link>

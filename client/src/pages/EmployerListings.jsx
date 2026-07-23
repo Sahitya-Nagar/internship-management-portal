@@ -163,9 +163,29 @@ export default function EmployerListings() {
     }
   };
 
-  const getResumeUrl = (path) => {
-    const filename = path.split("/").pop();
-    return `${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${filename}`;
+  const downloadResume = async (applicationId, studentName) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/applications/${applicationId}/resume`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: 'blob',
+        }
+      );
+
+      // Create download link
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${studentName.replace(/\s+/g, '_')}_resume.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Error downloading resume:", err);
+      alert("Failed to download resume. Please try again.");
+    }
   };
 
   if (selectedJob) {
@@ -231,16 +251,13 @@ export default function EmployerListings() {
                         {app.student_major || "Kinesiology"}
                       </td>
                       <td className="py-3">
-                        <a
-                          href={getResumeUrl(app.resume_path)}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          onClick={() => downloadResume(app.id, app.student_name)}
                           className="text-gray-900 hover:underline flex items-center gap-1 text-xs"
                         >
                           <FileText size={14} className="text-gray-500" />
-                          <span>View Resume</span>
-                          <ExternalLink size={12} className="text-gray-400 shrink-0" />
-                        </a>
+                          <span>Download Resume</span>
+                        </button>
                       </td>
                       <td className="py-3 text-xs text-gray-600">
                         {new Date(app.applied_at).toLocaleDateString()}

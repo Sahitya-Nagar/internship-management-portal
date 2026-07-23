@@ -12,11 +12,37 @@ export const register = async (req, res) => {
     });
   }
 
-  const validRoles = ["student", "employer", "admin", "supervisor"];
+  // Only allow student and employer self-registration
+  const validRoles = ["student", "employer"];
   if (!validRoles.includes(role)) {
     return res.status(400).json({
       success: false,
-      message: "Invalid role selected",
+      message: "Invalid role. Only students and employers can self-register. Admin and supervisor accounts must be created by administrators.",
+    });
+  }
+
+  // Validate password strength
+  if (password.length < 8) {
+    return res.status(400).json({
+      success: false,
+      message: "Password must be at least 8 characters long",
+    });
+  }
+
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({
+      success: false,
+      message: "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+    });
+  }
+
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({
+      success: false,
+      message: "Please provide a valid email address",
     });
   }
 

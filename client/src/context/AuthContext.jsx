@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AuthContext = createContext(null);
 
@@ -16,6 +17,7 @@ export const AuthProvider = ({ children }) => {
       try {
         setUser(JSON.parse(storedUser));
         setToken(storedToken);
+        setupAxiosInterceptor();
       } catch (e) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
@@ -24,11 +26,27 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
+  const setupAxiosInterceptor = () => {
+    // Add response interceptor to handle 401 errors (expired tokens)
+    axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401 && token) {
+          // Token expired or invalid - logout user
+          console.error("Authentication error - token expired or invalid");
+          logout();
+        }
+        return Promise.reject(error);
+      }
+    );
+  };
+
   const login = (newToken, userData) => {
     localStorage.setItem("token", newToken);
     localStorage.setItem("user", JSON.stringify(userData));
     setToken(newToken);
     setUser(userData);
+    setupAxiosInterceptor();
 
     // Redirect to correct dashboard based on role
     switch (userData.role) {
