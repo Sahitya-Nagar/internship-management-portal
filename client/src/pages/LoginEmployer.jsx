@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext.jsx";
+import { AlertCircle } from "lucide-react";
 
 export default function LoginEmployer() {
   const [email, setEmail] = useState("");
@@ -9,6 +10,7 @@ export default function LoginEmployer() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,26 +18,26 @@ export default function LoginEmployer() {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/login`,
+        { email, password }
+      );
 
       if (response.data.success) {
         const user = response.data.user;
-        
         if (user.role !== "employer") {
-          setError(`Access denied. This login portal is for employers only.`);
+          setError(
+            `Access denied. This portal is for Employers only. Your account is registered as: ${user.role}.`
+          );
           setLoading(false);
           return;
         }
-
         login(response.data.token, user);
       }
     } catch (err) {
-      console.error("Login failure:", err);
       setError(
-        err.response?.data?.message || "Invalid credentials. Please try again."
+        err.response?.data?.message ||
+          "Invalid credentials. Please try again."
       );
     } finally {
       setLoading(false);
@@ -43,101 +45,70 @@ export default function LoginEmployer() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-2xl font-bold tracking-tight text-gray-900">
-          Employer Portal Login
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          CHPH Internship Portal
-        </p>
-      </div>
+    <div className="flex justify-center items-start pt-8 pb-16">
+      <div className="w-full max-w-md bg-white rounded-sm shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-gray-50 border-b border-gray-200 p-6 text-center">
+          <h1 className="text-2xl font-bold text-gray-800">Employer Login</h1>
+          <p className="text-gray-500 text-sm mt-1">
+            Community Partners and Employers
+          </p>
+        </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-sm border border-gray-200 sm:rounded-lg sm:px-10">
+        <div className="p-6 sm:p-8">
           {error && (
-            <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4">
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="mb-6 flex gap-3 items-start bg-red-50 border border-red-200 text-red-700 text-sm rounded p-3">
+              <AlertCircle size={16} className="mt-0.5 flex-shrink-0 text-red-500" />
+              <span>{error}</span>
             </div>
           )}
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label
-                htmlFor="email-address"
-                className="block text-sm font-medium text-gray-700"
+                htmlFor="email"
+                className="block text-sm font-semibold text-gray-700 mb-1.5"
               >
                 Email address
               </label>
-              <div className="mt-1">
-                <input
-                  id="email-address"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-gray-900 sm:text-sm"
-                />
-              </div>
+              <input
+                id="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="employer@company.com"
+                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-lancer-blue-900 focus:border-transparent text-sm text-gray-900"
+              />
             </div>
 
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-semibold text-gray-700 mb-1.5"
               >
                 Password
               </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-gray-900 sm:text-sm"
-                />
-              </div>
+              <input
+                id="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-lancer-blue-900 focus:border-transparent text-sm text-gray-900"
+              />
             </div>
 
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex w-full justify-center rounded-md border border-transparent bg-lancer-blue-900 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-lancer-blue-800 focus:outline-none focus:ring-2 focus:ring-lancer-blue-900 focus:ring-offset-2 disabled:opacity-50"
-              >
-                {loading ? "Signing in..." : "Sign in as Employer"}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2.5 px-4 bg-lancer-blue-900 hover:bg-lancer-blue-800 disabled:opacity-70 text-white text-sm font-bold rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lancer-blue-900 transition-colors"
+            >
+              {loading ? "Signing in..." : "Sign in as Employer"}
+            </button>
           </form>
-
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="bg-white px-2 text-gray-500">
-                  New to the portal?
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-6 text-center">
-              <Link
-                to="/register"
-                className="font-medium text-gray-900 hover:text-gray-700"
-              >
-                Create an account
-              </Link>
-            </div>
-          </div>
-
-
         </div>
       </div>
     </div>
