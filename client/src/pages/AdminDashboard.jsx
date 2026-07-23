@@ -19,7 +19,6 @@ import {
   DollarSign,
   TrendingUp,
   FileSpreadsheet,
-  Printer,
   Calendar,
   Grid,
 } from "lucide-react";
@@ -65,9 +64,6 @@ export default function AdminDashboard() {
         );
         if (response.data.success) {
           setSemesters(response.data.data);
-          if (response.data.data.length > 0) {
-            setSelectedSemester(response.data.data[0]);
-          }
         }
       } catch (err) {
         console.error("Error fetching semesters:", err);
@@ -114,8 +110,7 @@ export default function AdminDashboard() {
     fetchAnalytics();
   }, [selectedSemester]);
 
-  const handleExportCSV = () => {
-    let csvContent = "data:text/csv;charset=utf-8,";
+  const handleExportCSV = () => {    let csvContent = "data:text/csv;charset=utf-8,";
     csvContent += "Metric,Value\n";
     csvContent += `Report Semester,${selectedSemester || "Overall"}\n`;
     csvContent += `Students Placed,${summary.studentsPlaced}\n`;
@@ -150,10 +145,6 @@ export default function AdminDashboard() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
-
-  const handlePrintPDF = () => {
-    window.print();
   };
 
   const COLORS = ["#111827", "#374151", "#4b5563", "#6b7280", "#9ca3af"];
@@ -194,14 +185,6 @@ export default function AdminDashboard() {
           >
             <FileSpreadsheet size={16} className="text-gray-600" />
             <span>Export CSV</span>
-          </button>
-
-          <button
-            onClick={handlePrintPDF}
-            className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-md font-medium text-sm shadow-sm transition-colors"
-          >
-            <Printer size={16} />
-            <span>Print Report</span>
           </button>
         </div>
       </div>

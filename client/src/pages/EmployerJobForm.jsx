@@ -38,6 +38,46 @@ export default function EmployerJobForm() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
+
+  const validateStep1 = () => {
+    const errors = {};
+    if (!formData.organization?.trim()) errors.organization = "Organization name is required.";
+    if (!formData.contact_name?.trim()) errors.contact_name = "Contact name is required.";
+    if (!formData.contact_email?.trim()) {
+      errors.contact_email = "Contact email is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.contact_email)) {
+      errors.contact_email = "Enter a valid email address.";
+    }
+    if (!formData.contact_phone?.trim()) {
+      errors.contact_phone = "Phone number is required.";
+    } else if (!/^[\d\s\-().+]{7,20}$/.test(formData.contact_phone)) {
+      errors.contact_phone = "Enter a valid phone number.";
+    }
+    return errors;
+  };
+
+  const validateStep2 = () => {
+    const errors = {};
+    if (!formData.title?.trim()) errors.title = "Position title is required.";
+    if (!formData.city?.trim()) errors.city = "City is required.";
+    if (!formData.start_date) errors.start_date = "Start date is required.";
+    if (!formData.description?.trim()) {
+      errors.description = "Description is required.";
+    } else if (formData.description.trim().length < 20) {
+      errors.description = "Description must be at least 20 characters.";
+    }
+    if (!formData.apply_url?.trim()) {
+      errors.apply_url = formData.apply_method === "link"
+        ? "Application URL is required."
+        : "Contact email is required.";
+    } else if (formData.apply_method === "link" && !/^https?:\/\/.+/.test(formData.apply_url)) {
+      errors.apply_url = "Enter a valid URL starting with http:// or https://";
+    } else if (formData.apply_method === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.apply_url)) {
+      errors.apply_url = "Enter a valid email address.";
+    }
+    return errors;
+  };
 
   useEffect(() => {
     const draft = localStorage.getItem("employer_job_draft");
@@ -53,6 +93,10 @@ export default function EmployerJobForm() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear field error on change
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSaveDraft = () => {
@@ -62,20 +106,19 @@ export default function EmployerJobForm() {
 
   const handleNext = () => {
     setError("");
+    setFieldErrors({});
     if (step === 1) {
-      if (!formData.contact_name || !formData.contact_email || !formData.contact_phone) {
-        setError("Please complete all contact details before proceeding.");
+      const errors = validateStep1();
+      if (Object.keys(errors).length > 0) {
+        setFieldErrors(errors);
+        setError("Please fix the errors below before proceeding.");
         return;
       }
     } else if (step === 2) {
-      if (
-        !formData.title ||
-        !formData.city ||
-        !formData.start_date ||
-        !formData.description ||
-        !formData.apply_url
-      ) {
-        setError("Please complete all job details before proceeding.");
+      const errors = validateStep2();
+      if (Object.keys(errors).length > 0) {
+        setFieldErrors(errors);
+        setError("Please fix the errors below before proceeding.");
         return;
       }
     }
@@ -84,6 +127,7 @@ export default function EmployerJobForm() {
 
   const handleBack = () => {
     setError("");
+    setFieldErrors({});
     setStep((prev) => prev - 1);
   };
 
@@ -138,6 +182,25 @@ export default function EmployerJobForm() {
     "Nunavut",
     "Yukon",
   ];
+
+  const inputClass = (field) =>
+    `block w-full pl-9 pr-3 py-2 border rounded-md text-gray-900 focus:outline-none focus:ring-1 text-sm transition-colors ${
+      fieldErrors[field]
+        ? "border-red-400 focus:ring-red-400 focus:border-red-400 bg-red-50"
+        : "border-gray-300 focus:ring-gray-900 focus:border-gray-900"
+    }`;
+
+  const inputClassPlain = (field) =>
+    `block w-full px-3 py-2 border rounded-md text-gray-900 focus:outline-none focus:ring-1 text-sm transition-colors ${
+      fieldErrors[field]
+        ? "border-red-400 focus:ring-red-400 focus:border-red-400 bg-red-50"
+        : "border-gray-300 focus:ring-gray-900 focus:border-gray-900"
+    }`;
+
+  const FieldError = ({ field }) =>
+    fieldErrors[field] ? (
+      <p className="mt-1 text-xs text-red-600">{fieldErrors[field]}</p>
+    ) : null;
 
   return (
     <div className="max-w-3xl mx-auto font-sans">
@@ -216,9 +279,10 @@ export default function EmployerJobForm() {
                     value={formData.organization}
                     onChange={handleChange}
                     placeholder="Windsor Physiotherapy"
-                    className="block w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
+                    className={inputClass("organization")}
                   />
                 </div>
+                <FieldError field="organization" />
               </div>
 
               <div>
@@ -235,10 +299,10 @@ export default function EmployerJobForm() {
                     value={formData.contact_name}
                     onChange={handleChange}
                     placeholder="John Doe"
-                    required
-                    className="block w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
+                    className={inputClass("contact_name")}
                   />
                 </div>
+                <FieldError field="contact_name" />
               </div>
 
               <div>
@@ -255,10 +319,10 @@ export default function EmployerJobForm() {
                     value={formData.contact_email}
                     onChange={handleChange}
                     placeholder="john@company.com"
-                    required
-                    className="block w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
+                    className={inputClass("contact_email")}
                   />
                 </div>
+                <FieldError field="contact_email" />
               </div>
 
               <div>
@@ -275,10 +339,10 @@ export default function EmployerJobForm() {
                     value={formData.contact_phone}
                     onChange={handleChange}
                     placeholder="519-555-0199"
-                    required
-                    className="block w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
+                    className={inputClass("contact_phone")}
                   />
                 </div>
+                <FieldError field="contact_phone" />
               </div>
             </div>
 
@@ -321,9 +385,9 @@ export default function EmployerJobForm() {
                   value={formData.title}
                   onChange={handleChange}
                   placeholder="Clinical Kinesiology Intern"
-                  required
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
+                  className={inputClassPlain("title")}
                 />
+                <FieldError field="title" />
               </div>
 
               <div>
@@ -372,10 +436,10 @@ export default function EmployerJobForm() {
                     value={formData.city}
                     onChange={handleChange}
                     placeholder="Windsor"
-                    required
-                    className="block w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
+                    className={inputClass("city")}
                   />
                 </div>
+                <FieldError field="city" />
               </div>
 
               <div>
@@ -424,10 +488,10 @@ export default function EmployerJobForm() {
                     name="start_date"
                     value={formData.start_date}
                     onChange={handleChange}
-                    required
-                    className="block w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
+                    className={inputClass("start_date")}
                   />
                 </div>
+                <FieldError field="start_date" />
               </div>
 
               <div>
@@ -461,9 +525,9 @@ export default function EmployerJobForm() {
                       ? "https://..."
                       : "email@company.com"
                   }
-                  required
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
+                  className={inputClassPlain("apply_url")}
                 />
+                <FieldError field="apply_url" />
               </div>
 
               <div className="md:col-span-2">
@@ -476,9 +540,13 @@ export default function EmployerJobForm() {
                   onChange={handleChange}
                   rows={4}
                   placeholder="Duties, requirements, skills..."
-                  required
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-sm transition-colors"
+                  className={`block w-full px-3 py-2 border rounded-md text-gray-900 focus:outline-none focus:ring-1 text-sm transition-colors ${
+                    fieldErrors.description
+                      ? "border-red-400 focus:ring-red-400 focus:border-red-400 bg-red-50"
+                      : "border-gray-300 focus:ring-gray-900 focus:border-gray-900"
+                  }`}
                 />
+                <FieldError field="description" />
               </div>
             </div>
 
@@ -608,7 +676,7 @@ export default function EmployerJobForm() {
             <div className="mx-auto h-12 w-12 bg-gray-50 border border-gray-200 rounded-full flex items-center justify-center">
               <CheckCircle className="h-6 w-6 text-gray-900" />
             </div>
-            
+
             <div className="space-y-2">
               <h2 className="text-xl font-bold text-gray-900">
                 Position Submitted
@@ -638,6 +706,7 @@ export default function EmployerJobForm() {
                     apply_method: "link",
                     apply_url: "",
                   });
+                  setFieldErrors({});
                   setStep(1);
                 }}
                 className="px-4 py-2 rounded-md border border-gray-300 text-gray-900 hover:bg-gray-50 font-medium text-sm transition-colors"
