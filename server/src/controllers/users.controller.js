@@ -1,4 +1,6 @@
 import { query } from "../utils/db.js";
+import xlsx from "xlsx";
+import fs from "fs";
 
 export const getEmployers = async (req, res) => {
   try {
@@ -79,6 +81,69 @@ export const getStudents = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Internal server error while fetching students list",
+    });
+  }
+};
+
+export const uploadPlacements = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
+
+    const filePath = req.file.path;
+    const workbook = xlsx.readFile(filePath);
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    
+    // Parse sheet to JSON array, starting from row 2 (index 1) skipping header
+    const data = xlsx.utils.sheet_to_json(sheet, { header: 1 });
+    // Remove header row
+    const rows = data.slice(1);
+    
+    let insertedCount = 0;
+
+    for (const row of rows) {
+      if (!row || row.length === 0) continue;
+      
+      const academic_year = row[0]?.toString() || "";
+      const semester = row[1] || "";
+      const employer_name = row[2] || "";
+      // supervisor is row[3], title is row[4]
+      const major = row[5] || "";
+      const discipline = row[6] || "";
+      const city = row[7] || "";
+      const province = row[8] || "";
+      const compensation = row[9] || "Unpaid";
+
+      // Only insert if essential data is present
+      if (employer_name && academic_year) {
+        await query(
+          `INSERT INTO placements (employer_name, discipline, city, province, compensation, major, semester, academic_year)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+          [employer_name, discipline, city, province, compensation, major, semester, academic_year]
+        );
+        insertedCount++;
+      }
+    }
+
+    // Clean up uploaded file
+    fs.unlinkSync(filePath);
+
+    return res.json({
+      success: true,
+      message: "Placements imported successfully",
+      insertedCount
+    });
+  } catch (error) {
+    console.error("Error uploading placements:", error);
+    // Attempt cleanup if error occurs
+    if (req.file?.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error during placements upload",
     });
   }
 };

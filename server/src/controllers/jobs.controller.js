@@ -179,6 +179,26 @@ export const publishJob = async (req, res) => {
   const { id } = req.params;
 
   try {
+    // Check if job exists and is in pending state
+    const { rows: existingJob } = await query(
+      'SELECT status FROM jobs WHERE id = $1',
+      [id]
+    );
+
+    if (existingJob.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Job listing not found",
+      });
+    }
+
+    if (existingJob[0].status !== 'pending') {
+      return res.status(400).json({
+        success: false,
+        message: `Only pending jobs can be published. This job is currently ${existingJob[0].status}`,
+      });
+    }
+
     const { rows } = await query(
       `UPDATE jobs
        SET status = 'published', published_at = CURRENT_TIMESTAMP
@@ -186,13 +206,6 @@ export const publishJob = async (req, res) => {
        RETURNING *`,
       [id]
     );
-
-    if (rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Job listing not found",
-      });
-    }
 
     return res.json({
       success: true,
@@ -212,6 +225,26 @@ export const declineJob = async (req, res) => {
   const { id } = req.params;
 
   try {
+    // Check if job exists and is in pending state
+    const { rows: existingJob } = await query(
+      'SELECT status FROM jobs WHERE id = $1',
+      [id]
+    );
+
+    if (existingJob.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Job listing not found",
+      });
+    }
+
+    if (existingJob[0].status !== 'pending') {
+      return res.status(400).json({
+        success: false,
+        message: `Only pending jobs can be declined. This job is currently ${existingJob[0].status}`,
+      });
+    }
+
     const { rows } = await query(
       `UPDATE jobs
        SET status = 'declined'
@@ -219,13 +252,6 @@ export const declineJob = async (req, res) => {
        RETURNING *`,
       [id]
     );
-
-    if (rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Job listing not found",
-      });
-    }
 
     return res.json({
       success: true,

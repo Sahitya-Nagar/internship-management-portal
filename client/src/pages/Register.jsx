@@ -20,6 +20,20 @@ export default function Register() {
     setError("");
     setLoading(true);
 
+    // Frontend password validation
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      setLoading(false);
+      return;
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      setError("Password must contain at least one uppercase letter, one lowercase letter, and one number");
+      setLoading(false);
+      return;
+    }
+
     const payload = {
       name,
       email,
@@ -58,18 +72,18 @@ export default function Register() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-lancer-blue-50 to-lancer-gold-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-2xl font-bold tracking-tight text-gray-900">
+        <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-lancer-blue-700">
           Create an account
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          CHPH Internship Portal
+        <p className="mt-2 text-center text-sm text-lancer-blue-600 font-medium">
+          UWindsor Kinesiology Internship Portal
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-sm border border-gray-200 sm:rounded-lg sm:px-10">
+        <div className="bg-white py-8 px-4 shadow-lg border border-lancer-blue-100 sm:rounded-lg sm:px-10">
           {error && (
             <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4">
               <p className="text-sm text-red-700">{error}</p>
@@ -87,8 +101,8 @@ export default function Register() {
                   onClick={() => setRole("student")}
                   className={`px-4 py-2 text-sm font-medium rounded-md border ${
                     role === "student"
-                      ? "bg-gray-900 text-white border-transparent"
-                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                      ? "bg-lancer-blue-500 text-white border-transparent hover:bg-lancer-blue-600"
+                      : "bg-white text-lancer-blue-700 border-lancer-blue-300 hover:bg-lancer-blue-50"
                   }`}
                 >
                   Student
@@ -98,8 +112,8 @@ export default function Register() {
                   onClick={() => setRole("employer")}
                   className={`px-4 py-2 text-sm font-medium rounded-md border ${
                     role === "employer"
-                      ? "bg-gray-900 text-white border-transparent"
-                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                      ? "bg-lancer-blue-500 text-white border-transparent hover:bg-lancer-blue-600"
+                      : "bg-white text-lancer-blue-700 border-lancer-blue-300 hover:bg-lancer-blue-50"
                   }`}
                 >
                   Employer
@@ -125,7 +139,7 @@ export default function Register() {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-gray-900 sm:text-sm"
+                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-lancer-blue-500 focus:outline-none focus:ring-lancer-blue-500 sm:text-sm"
                 />
               </div>
             </div>
@@ -145,7 +159,7 @@ export default function Register() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-gray-900 sm:text-sm"
+                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-lancer-blue-500 focus:outline-none focus:ring-lancer-blue-500 sm:text-sm"
                 />
               </div>
             </div>
@@ -165,9 +179,12 @@ export default function Register() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-gray-900 sm:text-sm"
+                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-lancer-blue-500 focus:outline-none focus:ring-lancer-blue-500 sm:text-sm"
                 />
               </div>
+              <p className="mt-1 text-xs text-gray-500">
+                Must be at least 8 characters with uppercase, lowercase, and number
+              </p>
             </div>
 
             {role === "student" && (
@@ -183,7 +200,7 @@ export default function Register() {
                     id="major"
                     value={major}
                     onChange={(e) => setMajor(e.target.value)}
-                    className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-gray-900 sm:text-sm"
+                    className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-lancer-blue-500 focus:outline-none focus:ring-lancer-blue-500 sm:text-sm"
                   >
                     {majors.map((m) => (
                       <option key={m} value={m}>
@@ -211,7 +228,7 @@ export default function Register() {
                     required
                     value={organization}
                     onChange={(e) => setOrganization(e.target.value)}
-                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-gray-900 sm:text-sm"
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder-gray-400 focus:border-lancer-blue-500 focus:outline-none focus:ring-lancer-blue-500 sm:text-sm"
                   />
                 </div>
               </div>
@@ -221,7 +238,7 @@ export default function Register() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex w-full justify-center rounded-md border border-transparent bg-gray-900 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 disabled:opacity-50"
+                className="flex w-full justify-center rounded-md border border-transparent bg-lancer-blue-500 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-lancer-blue-600 focus:outline-none focus:ring-2 focus:ring-lancer-blue-500 focus:ring-offset-2 disabled:opacity-50"
               >
                 {loading ? "Creating account..." : "Register"}
               </button>
@@ -243,7 +260,7 @@ export default function Register() {
             <div className="mt-6 text-center">
               <Link
                 to="/login"
-                className="font-medium text-gray-900 hover:text-gray-700"
+                className="font-medium text-lancer-blue-600 hover:text-lancer-blue-500"
               >
                 Sign in
               </Link>

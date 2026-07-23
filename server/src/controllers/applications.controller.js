@@ -19,7 +19,8 @@ export const applyJob = async (req, res) => {
 
   try {
     const studentId = req.user.id;
-    const resumePath = req.file.path.replace(/\\/g, "/"); // Normalise windows paths
+    // Store only the filename, not the full path
+    const resumePath = req.file.filename;
 
     // Check if the student has already applied to this job
     const { rows: existingApps } = await query(
@@ -168,7 +169,7 @@ export const updateApplicationStatus = async (req, res) => {
     const application = appDetails[0];
 
     // Verify authorized user (employer or admin)
-    if (req.user.role !== "admin" && application.employer_id !== req.user.id) {
+    if (req.user.role !== "admin" && req.user.role !== "supervisor" && application.employer_id !== req.user.id) {
       return res.status(403).json({
         success: false,
         message: "You are not authorized to update this application status",
@@ -184,7 +185,7 @@ export const updateApplicationStatus = async (req, res) => {
       [status, id]
     );
 
-    // If accepted, check if placement already exists, if not, create it
+    // If accepted, create placement record
     if (status === "accepted") {
       const { rows: existingPlacements } = await query(
         "SELECT id FROM placements WHERE student_id = $1 AND job_id = $2",
@@ -192,7 +193,7 @@ export const updateApplicationStatus = async (req, res) => {
       );
 
       if (existingPlacements.length === 0) {
-        // Calculate semester based on month (June 2026 -> F-26 or S-26)
+        // Calculate semester based on current month
         const date = new Date();
         const year = date.getFullYear().toString();
         const month = date.getMonth(); // 0-indexed: 5 is June
@@ -232,6 +233,62 @@ export const updateApplicationStatus = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Internal server error while updating application status",
+    });
+  }
+};
+
+export const downloadResume = async (req, res) => {
+  const { id } = req.params; // application ID
+
+  try {
+    // Get application details
+    const { rows: applications } = await query(
+      `SELECT a.*, j.employer_id
+       FROM applications a
+       JOIN jobs j ON a.job_id = j.id
+       WHERE a.id = $1`,
+      [id]
+    );
+
+    if (applications.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Application not found",
+      });
+    }
+
+    const application = applications[0];
+
+    // Authorization: only employer who owns the job, student who applied, or admin can download
+    const isEmployer = req.user.role === "employer" && application.employer_id === req.user.id;
+    const isStudent = req.user.role === "student" && application.student_id === req.user.id;
+    const isAdmin = req.user.role === "admin" || req.user.role === "supervisor";
+
+    if (!isEmployer && !isStudent && !isAdmin) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to download this resume",
+      });
+    }
+
+    // Send file
+    const path = await import('path');
+    const filePath = path.resolve('uploads', application.resume_path);
+    
+    return res.download(filePath, (err) => {
+      if (err) {
+        console.error("Error downloading file:", err);
+        return res.status(404).json({
+          success: false,
+          message: "Resume file not found",
+        });
+      }
+    });
+  } catch (error) {
+    console.error("Error downloading resume:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error while downloading resume",
     });
   }
 };
