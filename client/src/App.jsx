@@ -27,17 +27,7 @@ function Layout({ children }) {
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans text-gray-800">
-      {/* 1. Utility Bar */}
-      <div className="bg-[#002244] py-1.5 px-4 hidden md:block">
-        <div className="max-w-7xl mx-auto flex justify-end gap-4 text-[11px] text-gray-300 font-semibold tracking-wider uppercase">
-          <a href="#" className="hover:text-white transition-colors">UWinGmail</a>
-          <a href="#" className="hover:text-white transition-colors">Brightspace</a>
-          <a href="#" className="hover:text-white transition-colors">UWinsite</a>
-          <a href="#" className="hover:text-white transition-colors">Directory</a>
-        </div>
-      </div>
-
-      {/* 2. Main Header (White background for dark logo) */}
+      {/* Main Header (White background for dark logo) */}
       <header className="bg-white border-b-[6px] border-lancer-gold-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-4 hover:opacity-90 transition-opacity">
@@ -47,29 +37,8 @@ function Layout({ children }) {
               className="h-10 sm:h-14 w-auto"
             />
           </div>
-          <div className="hidden sm:block">
-            <div className="relative">
-              <input 
-                type="text" 
-                placeholder="Search" 
-                className="w-48 lg:w-64 py-1.5 px-3 border border-gray-300 rounded-sm text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-lancer-blue-900"
-              />
-              <button className="absolute right-0 top-0 h-full px-3 bg-lancer-blue-900 hover:bg-lancer-blue-800 text-white rounded-r-sm font-bold text-sm transition-colors">
-                GO
-              </button>
-            </div>
-          </div>
         </div>
       </header>
-
-      {/* 3. Department Bar */}
-      <div className="bg-gray-100 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <h1 className="text-xl font-bold text-gray-900">
-            CHPH Internship Portal
-          </h1>
-        </div>
-      </div>
 
       {/* 4. Main Body Container */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row gap-8">
