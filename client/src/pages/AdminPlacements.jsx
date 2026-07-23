@@ -86,7 +86,8 @@ export default function AdminPlacements() {
       );
       
       if (response.data.success) {
-        setUploadSuccess(`Successfully imported ${response.data.insertedCount} placements!`);
+        const skipped = response.data.skippedCount > 0 ? ` (${response.data.skippedCount} rows skipped due to missing data)` : "";
+        setUploadSuccess(`Successfully imported ${response.data.insertedCount} placements!${skipped}`);
         setUploadFile(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
         fetchPlacements();
